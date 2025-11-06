@@ -1,0 +1,271 @@
+require:
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-slim
+
+inherit_mode:
+  merge:
+    - Include
+
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.4.0
+  Exclude:
+    # ignore bin/* except for bin/setup
+    - !ruby/regexp /<%= Regexp.quote(File.expand_path("bin", __dir__)) %>\/(?!setup).*/
+    - coverage/**/*
+    - db/*schema.rb
+    - log/**/*
+    - node_modules/**/*
+    - public/**/*
+    - storage/**/*
+    - tmp/**/*
+    - vendor/**/*
+    - lib/tasks/**/*
+    - config/initializers/**/*
+    - db/**/*
+    - nginx/**/*
+    - .git/**/*
+    - .bundle/**/*
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Layout/ClassStructure:
+  ExpectedOrder:
+    - module_inclusion
+    - constants
+    - association
+    - public_attribute_macros
+    - public_delegate
+    - macros
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_attribute_macros
+    - protected_methods
+    - private_attribute_macros
+    - private_delegate
+    - private_methods
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/EmptyLineAfterMultilineCondition:
+  Enabled: true
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+Layout/LineLength:
+  Max: 160
+  Exclude:
+    - db/migrate/*.rb
+    - spec/**/*
+    - config/initializers/content_security_policy.rb
+
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+
+Layout/MultilineArrayBraceLayout:
+  EnforcedStyle: new_line
+
+Layout/MultilineHashBraceLayout:
+  EnforcedStyle: new_line
+
+Layout/MultilineMethodCallBraceLayout:
+  EnforcedStyle: new_line
+
+Layout/MultilineMethodDefinitionBraceLayout:
+  EnforcedStyle: new_line
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+  AllowBeforeTrailingComments: true
+  ForceEqualSignAlignment: false
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: key
+  EnforcedColonStyle: key
+  EnforcedLastArgumentHashStyle: always_inspect
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_first_parameter
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
+
+Lint/DuplicateBranch:
+  Enabled: false
+
+Lint/UselessAccessModifier:
+  ContextCreatingMethods:
+    - concerning
+  MethodCreatingMethods:
+    - delegate
+
+Lint/MissingSuper:
+  Exclude:
+    - app/services/**/*
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/BlockLength:
+  Max: 50
+  Exclude:
+    - spec/**/*
+
+Metrics/BlockNesting:
+  Max: 4
+
+Metrics/ClassLength:
+  Max: 250
+  CountAsOne: ["array", "hash", "method_call", "heredoc"]
+  Exclude:
+    - test/**/*
+
+Metrics/ModuleLength:
+  CountAsOne: ["array", "hash", "method_call", "heredoc"]
+  Max: 250
+
+Metrics/MethodLength:
+  Max: 30
+  CountAsOne: ["array", "hash", "method_call", "heredoc"]
+  Exclude:
+    - db/migrate/*.rb
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Max: 4
+
+Metrics/PerceivedComplexity:
+  Max: 8
+  Exclude:
+    - bin/setup
+
+Style/AutoResourceCleanup:
+  Enabled: true
+
+Style/AndOr:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FetchEnvVar:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/GlobalStdStream:
+  Exclude:
+    - config/**/*
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: true
+
+Style/RedundantFetchBlock:
+  Enabled: false
+
+Style/RedundantRegexpArgument:
+  Enabled: false
+
+Style/Semicolon:
+  AllowAsExpressionSeparator: true
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Style/NumericLiterals:
+  MinDigits: 7
+
+Style/WordArray:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/ApplicationRecord:
+  Exclude:
+    - db/migrate/**

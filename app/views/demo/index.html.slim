@@ -1,0 +1,143 @@
+- provide(:title, "RabbitMQ & Sidekiq Demo")
+
+section.py-16.bg-base-100
+  .container.mx-auto.px-4
+    h1.text-center.mb-12.text-4xl.md:text-5xl.font-bold.text-orange-500
+      | 🚀 Live Demo: RabbitMQ vs Sidekiq
+
+    .grid.grid-cols-1.lg:grid-cols-2.gap-8
+      / Sidekiq Demo
+      .bg-base-200.border-2.border-green-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
+        .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
+          .text-5xl ⚡
+          .text-3xl.font-bold.text-green-500 Sidekiq Demo
+
+        .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
+          h4.text-orange-500.font-bold.mb-2 About Sidekiq
+          p.text-sm.text-base-content.opacity-80 Fast, simple background job processing for Ruby. Perfect for Rails monoliths with straightforward job queuing needs.
+
+        .grid.grid-cols-2.gap-4.mb-8
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#sidekiq-processed 0
+            .text-sm.text-base-content.opacity-70 Processed
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#sidekiq-workers 0
+            .text-sm.text-base-content.opacity-70 Workers
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#sidekiq-failed 0
+            .text-sm.text-base-content.opacity-70 Failed
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#sidekiq-latency 0ms
+            .text-sm.text-base-content.opacity-70 Latency
+
+        = form_with url: create_order_demo_index_path, method: :post, local: true, class: "space-y-6" do |f|
+          .mb-6
+            h3.text-xl.font-bold.mb-4 📧 Send Email Job
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Email Address
+              = f.text_field :email, value: "demo@example.com", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "user@example.com"
+            = f.submit "📧 Send Email Job", class: "btn btn-success w-full"
+
+          .mb-6
+            h3.text-xl.font-bold.mb-4 🖼️ Process Image
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Image URL
+              = f.text_field :image_url, value: "https://example.com/image.jpg", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "https://..."
+            = f.submit "🖼️ Process Image", class: "btn btn-success w-full"
+
+        .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
+          pre#sidekiq-response.text-sm.font-mono.text-green-500 Waiting for action...
+
+      / RabbitMQ Demo
+      .bg-base-200.border-2.border-orange-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
+        .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
+          .text-5xl 🐰
+          .text-3xl.font-bold.text-orange-500 RabbitMQ Demo
+
+        .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
+          h4.text-orange-500.font-bold.mb-2 About RabbitMQ
+          p.text-sm.text-base-content.opacity-80 Enterprise message broker with powerful routing. Ideal for microservices, event-driven architecture, and complex messaging patterns.
+
+        .grid.grid-cols-2.gap-4.mb-8
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#rabbitmq-messages 0
+            .text-sm.text-base-content.opacity-70 Messages
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#rabbitmq-connections 0
+            .text-sm.text-base-content.opacity-70 Connections
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#rabbitmq-queues 5
+            .text-sm.text-base-content.opacity-70 Queues
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500#rabbitmq-latency 0ms
+            .text-sm.text-base-content.opacity-70 Latency
+
+        = form_with url: create_order_demo_index_path, method: :post, local: true, class: "space-y-6" do |f|
+          .mb-6
+            h3.text-xl.font-bold.mb-4 📦 Create Order (Topic Exchange)
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Product
+              = f.text_field :product, value: "MacBook Pro", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Amount
+              = f.number_field :amount, value: 2999, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
+              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us'], ['Global', 'global']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            = f.submit "📦 Create Order", class: "btn btn-primary w-full"
+
+          = form_with url: paid_order_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
+            h3.text-xl.font-bold.mb-4 💰 Paid Order
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
+              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            = f.submit "💰 Paid Order", class: "btn btn-primary w-full"
+
+          = form_with url: shipped_order_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
+            h3.text-xl.font-bold.mb-4 🚚 Shipped Order
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
+              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            = f.submit "🚚 Shipped Order", class: "btn btn-primary w-full"
+
+          = form_with url: direct_exchange_demo_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
+            h3.text-xl.font-bold.mb-4 🎯 Direct Exchange Demo
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Priority
+              = f.select :priority, [['High', 'high'], ['Medium', 'medium'], ['Low', 'low']], { selected: 'high' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            = f.submit "🎯 Direct Exchange", class: "btn btn-primary w-full"
+
+          = form_with url: headers_exchange_demo_demo_index_path, method: :post, local: true do |f|
+            h3.text-xl.font-bold.mb-4 🔖 Headers Exchange Demo
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Format
+              = f.select :format, [['PDF', 'pdf'], ['DOCX', 'docx'], ['XLSX', 'xlsx']], { selected: 'pdf' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Priority
+              = f.select :priority, [['High', 'high'], ['Medium', 'medium'], ['Low', 'low']], { selected: 'high' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            .mb-4
+              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Size
+              = f.select :size, [['Large', 'large'], ['Medium', 'medium'], ['Small', 'small']], { selected: 'large' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
+            = f.submit "🔖 Headers Exchange", class: "btn btn-primary w-full"
+
+        .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
+          pre#rabbitmq-response.text-sm.font-mono.text-green-500 Waiting for action...
+
+javascript:
+  // Load stats on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/demo/stats')
+      .then(response => response.json())
+      .then(data => {
+        if (data.sidekiq) {
+          document.getElementById('sidekiq-processed').textContent = data.sidekiq.processed || 0;
+          document.getElementById('sidekiq-failed').textContent = data.sidekiq.failed || 0;
+          document.getElementById('sidekiq-latency').textContent = (data.sidekiq.latency || 0) + 'ms';
+        }
+        if (data.rabbitmq) {
+          document.getElementById('rabbitmq-messages').textContent = data.rabbitmq.messages || 0;
+          document.getElementById('rabbitmq-connections').textContent = data.rabbitmq.connections || 0;
+        }
+      })
+      .catch(err => console.error('Error loading stats:', err));
+  });

@@ -1,0 +1,142 @@
+- provide(:title, "Live Demo - RabbitMQ vs Sidekiq")
+
+section.py-16.bg-base-100 data-controller="demo"
+  .container.mx-auto.px-4
+    h1.text-center.mb-12.text-4xl.md:text-5xl.font-bold.text-orange-500
+      | 🚀 Live Demo: RabbitMQ vs Sidekiq
+
+    .grid.grid-cols-1.lg:grid-cols-2.gap-8
+      / Sidekiq Demo
+      .bg-base-200.border-2.border-green-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
+        .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
+          .text-5xl ⚡
+          .text-3xl.font-bold.text-green-500 Sidekiq Demo
+
+        .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
+          h4.text-orange-500.font-bold.mb-2 About Sidekiq
+          p.text-sm.text-base-content.opacity-80 Fast, simple background job processing for Ruby. Perfect for Rails monoliths with straightforward job queuing needs.
+
+        .grid.grid-cols-2.gap-4.mb-8
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 42,581
+            .text-sm.text-base-content.opacity-70 Processed
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 5
+            .text-sm.text-base-content.opacity-70 Workers
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 23
+            .text-sm.text-base-content.opacity-70 Failed
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 12ms
+            .text-sm.text-base-content.opacity-70 Latency
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 📧 Send Email Job
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Email Address
+            input#sidekiq-email.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content[type="email" placeholder="user@example.com" value="demo@example.com"]
+          button.btn.btn-success.w-full data-action="click->demo#sendSidekiqEmail"
+            | 📧 Send Email Job
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 🖼️ Process Image
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Image URL
+            input#sidekiq-image.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content[type="text" placeholder="https://..." value="https://example.com/image.jpg"]
+          button.btn.btn-success.w-full data-action="click->demo#processSidekiqImage"
+            | 🖼️ Process Image
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 📊 Generate Report
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Report Type
+            select#sidekiq-report.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="sales"] Sales Report
+              option[value="analytics"] Analytics Report
+              option[value="inventory"] Inventory Report
+          button.btn.btn-success.w-full data-action="click->demo#generateSidekiqReport"
+            | 📊 Generate Report
+
+        .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
+          pre#sidekiq-response.text-sm.font-mono.text-green-500 data-demo-target="sidekiqResponse" Waiting for action...
+
+      / RabbitMQ Demo
+      .bg-base-200.border-2.border-orange-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
+        .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
+          .text-5xl 🐰
+          .text-3xl.font-bold.text-orange-500 RabbitMQ Demo
+
+        .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
+          h4.text-orange-500.font-bold.mb-2 About RabbitMQ
+          p.text-sm.text-base-content.opacity-80 Enterprise message broker with powerful routing. Ideal for microservices, event-driven architecture, and complex messaging patterns.
+
+        .grid.grid-cols-2.gap-4.mb-8
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 3,245
+            .text-sm.text-base-content.opacity-70 Messages
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 8
+            .text-sm.text-base-content.opacity-70 Connections
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 5
+            .text-sm.text-base-content.opacity-70 Queues
+          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
+            .text-3xl.font-bold.text-orange-500 35ms
+            .text-sm.text-base-content.opacity-70 Latency
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 📦 Create Order (Direct Exchange)
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Customer Name
+            input#rabbitmq-customer.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content[type="text" placeholder="John Doe" value="John Doe"]
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Amount
+            input#rabbitmq-amount.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content[type="number" placeholder="100" value="250"]
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Priority
+            select#rabbitmq-priority.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="normal"] Normal
+              option[value="high"] High
+              option[value="critical"] Critical
+          button.btn.btn-primary.w-full data-action="click->demo#createRabbitmqOrder"
+            | 📦 Create Order
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 📢 Broadcast Notification (Fanout)
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Message
+            input#rabbitmq-notification.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content[type="text" placeholder="System update..." value="System maintenance at 2AM"]
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Type
+            select#rabbitmq-type.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="info"] Info
+              option[value="warning"] Warning
+              option[value="alert"] Alert
+          button.btn.btn-primary.w-full data-action="click->demo#broadcastRabbitmqNotification"
+            | 📢 Broadcast to All
+
+        .mb-6
+          h3.text-xl.font-bold.mb-4 🎯 Publish Event (Topic Exchange)
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Event Type
+            select#rabbitmq-event-type.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="order"] Order
+              option[value="user"] User
+              option[value="product"] Product
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Action
+            select#rabbitmq-action.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="created"] Created
+              option[value="updated"] Updated
+              option[value="deleted"] Deleted
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Region
+            select#rabbitmq-region.w-full.p-3.bg-base-100.border.border-base-300.rounded-lg.text-base-content
+              option[value="global"] Global
+              option[value="vn"] Vietnam
+              option[value="us"] USA
+          button.btn.btn-primary.w-full data-action="click->demo#publishRabbitmqEvent"
+            | 🎯 Publish Event
+
+        .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
+          pre#rabbitmq-response.text-sm.font-mono.text-green-500 data-demo-target="rabbitmqResponse" Waiting for action...
