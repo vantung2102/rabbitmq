@@ -14,13 +14,8 @@ class InventoryConsumer
   def work(msg)
     data = JSON.parse(msg)
 
-    Rails.logger.info "📦 [INVENTORY] Processing order ##{data['order_id']}"
-    Rails.logger.info "   → Checking stock for #{data['product']}"
-
     # Simulate inventory check
     sleep 1
-
-    Rails.logger.info "   ✅ Stock available, reserved for order ##{data['order_id']}"
 
     ack! # Acknowledge message
   rescue => e

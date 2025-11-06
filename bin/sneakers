@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+# Load Rails environment before running Sneakers
+require_relative '../config/environment'
+
+# Auto-discover and require all consumers
+consumers_dir = File.join(__dir__, '..', 'app', 'consumers')
+consumer_files = Dir.glob(File.join(consumers_dir, '*_consumer.rb')).sort
+
+if consumer_files.empty?
+  puts "❌ No consumers found in #{consumers_dir}"
+  exit 1
+end
+
+puts "🔍 Found #{consumer_files.length} consumer(s):"
+
+# Require all consumer files and collect classes
+consumer_classes = []
+consumer_files.each do |file|
+  require_relative file
+  # Convert filename to class name: accounting_consumer.rb -> AccountingConsumer
+  class_name = File.basename(file, '.rb').split('_').map(&:capitalize).join
+  begin
+    consumer_class = Object.const_get(class_name)
+    consumer_classes << consumer_class
+    puts "  ✅ Loaded: #{class_name}"
+  rescue NameError => e
+    puts "  ⚠️  Warning: Could not load #{class_name}: #{e.message}"
+  end
+end
+
+if consumer_classes.empty?
+  puts "❌ No valid consumers found!"
+  exit 1
+end
+
+puts ""
+puts "🚀 Starting Sneakers with #{consumer_classes.length} consumer(s)..."
+puts ""
+
+# Change to Rails root directory
+rails_root = File.expand_path('..', __dir__)
+Dir.chdir(rails_root)
+
+# Build command with all consumer class names (comma-separated)
+# Sneakers uses Kernel#load which needs absolute path WITH .rb extension
+consumer_names = consumer_classes.map(&:name).join(',')
+require_file = File.join(rails_root, 'lib', 'sneakers_workers.rb')
+cmd = "RAILS_ENV=#{Rails.env} bundle exec sneakers work #{consumer_names} --require #{require_file}"
+
+puts "Running from: #{rails_root}"
+puts "Command: #{cmd}"
+puts ""
+puts "Note: Sneakers will load lib/sneakers_workers.rb which loads Rails environment and all consumers"
+puts ""
+
+# Execute Sneakers command
+exec(cmd)

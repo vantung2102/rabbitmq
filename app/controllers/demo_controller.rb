@@ -2,10 +2,36 @@
 class DemoController < ApplicationController
   layout 'application'
 
-  def index
-    # Main demo page
+  def index; end
+
+  # Sidekiq Demo Actions
+  def send_email
+    email = params[:email] || "demo@example.com"
+
+    # Queue Sidekiq job
+    EmailWorker.perform_async(rand(10000..99999), email)
+
+    flash[:success] = "✅ Email job queued! Check Sidekiq Web UI at /sidekiq"
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to queue email job: #{e.message}"
+    redirect_to demo_index_path
   end
 
+  def process_image
+    image_url = params[:image_url] || "https://example.com/image.jpg"
+
+    # Queue Sidekiq job
+    ImageProcessingWorker.perform_async(rand(10000..99999), image_url)
+
+    flash[:success] = "✅ Image processing job queued! Check Sidekiq Web UI at /sidekiq"
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to queue image job: #{e.message}"
+    redirect_to demo_index_path
+  end
+
+  # RabbitMQ Demo Actions
   def create_order
     order_data = {
       order_id: rand(10000..99999),
@@ -16,14 +42,13 @@ class DemoController < ApplicationController
       timestamp: Time.now.iso8601
     }
 
-    # Demo 1: RabbitMQ - Publish to Topic Exchange
+    # RabbitMQ - Publish to Topic Exchange and Fanout Exchange
     OrderPublisher.publish_order_created(order_data)
 
-    # Demo 2: Sidekiq - Simple background jobs
-    EmailWorker.perform_async(order_data[:order_id], order_data[:customer_email])
-    ImageProcessingWorker.perform_async(order_data[:order_id], "https://example.com/product.jpg")
-
-    flash[:success] = "✅ Order ##{order_data[:order_id]} created! Check console logs."
+    flash[:success] = "✅ Order ##{order_data[:order_id]} published to RabbitMQ! Check console logs and RabbitMQ Management UI."
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to publish order: #{e.message}"
     redirect_to demo_index_path
   end
 
@@ -39,7 +64,10 @@ class DemoController < ApplicationController
 
     OrderPublisher.publish_order_paid(order_data)
 
-    flash[:success] = "✅ Order ##{order_data[:order_id]} paid! Check console logs."
+    flash[:success] = "✅ Order ##{order_data[:order_id]} paid! Published to RabbitMQ. Check console logs."
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to publish paid order: #{e.message}"
     redirect_to demo_index_path
   end
 
@@ -54,7 +82,10 @@ class DemoController < ApplicationController
 
     OrderPublisher.publish_order_shipped(order_data)
 
-    flash[:success] = "✅ Order ##{order_data[:order_id]} shipped! Check console logs."
+    flash[:success] = "✅ Order ##{order_data[:order_id]} shipped! Published to RabbitMQ. Check console logs."
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to publish shipped order: #{e.message}"
     redirect_to demo_index_path
   end
 
@@ -68,7 +99,10 @@ class DemoController < ApplicationController
 
     OrderPublisher.publish_with_priority(message, priority)
 
-    flash[:success] = "✅ Published to Direct Exchange with priority: #{priority}"
+    flash[:success] = "✅ Published to Direct Exchange with priority: #{priority}. Check console logs."
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to publish with priority: #{e.message}"
     redirect_to demo_index_path
   end
 
@@ -92,34 +126,65 @@ class DemoController < ApplicationController
 
     OrderPublisher.publish_with_headers(message, headers)
 
-    flash[:success] = "✅ Published to Headers Exchange with: #{headers.inspect}"
+    flash[:success] = "✅ Published to Headers Exchange with: #{headers.inspect}. Check console logs."
+    redirect_to demo_index_path
+  rescue => e
+    flash[:error] = "❌ Failed to publish with headers: #{e.message}"
     redirect_to demo_index_path
   end
 
   def stats
-    # Get RabbitMQ stats
-    @rabbitmq_stats = {
-      connected: RabbitMQConfig.connection&.open?,
-      exchanges: ['direct', 'fanout', 'topic', 'headers', 'dlx'],
-      queues: [
-        'inventory.service',
-        'accounting.service',
-        'vietnam.warehouse',
-        'analytics.service',
-        'logging.service'
-      ]
-    }
-
     # Get Sidekiq stats
-    @sidekiq_stats = Sidekiq::Stats.new
+    sidekiq_stats = Sidekiq::Stats.new
+    sidekiq_workers = Sidekiq::ProcessSet.new.size
+
+    # Get RabbitMQ stats
+    rabbitmq_connected = RabbitMQConfig.connection&.open? || false
+    rabbitmq_connections = rabbitmq_connected ? 1 : 0
+
+    # Try to get queue message counts from RabbitMQ
+    rabbitmq_messages = 0
+    rabbitmq_queues = 5 # Default queue count
+
+    begin
+      if rabbitmq_connected && RabbitMQConfig.channel
+        channel = RabbitMQConfig.channel
+        # Count messages in all known queues
+        known_queues = [
+          'inventory.service',
+          'accounting.service',
+          'vietnam.warehouse',
+          'analytics.service',
+          'logging.service'
+        ]
+
+        known_queues.each do |queue_name|
+          begin
+            queue = channel.queue(queue_name, passive: true)
+            rabbitmq_messages += queue.message_count if queue
+          rescue => e
+            # Queue might not exist yet, ignore
+          end
+        end
+      end
+    rescue => e
+      Rails.logger.debug "Could not get RabbitMQ queue stats: #{e.message}"
+    end
 
     render json: {
-      rabbitmq: @rabbitmq_stats,
       sidekiq: {
-        processed: @sidekiq_stats.processed,
-        failed: @sidekiq_stats.failed,
-        enqueued: @sidekiq_stats.enqueued,
-        scheduled: @sidekiq_stats.scheduled_size
+        processed: sidekiq_stats.processed || 0,
+        failed: sidekiq_stats.failed || 0,
+        enqueued: sidekiq_stats.enqueued || 0,
+        workers: sidekiq_workers || 0,
+        latency: sidekiq_stats.default_queue_latency.to_i || 0
+      },
+      rabbitmq: {
+        connected: rabbitmq_connected,
+        connections: rabbitmq_connections,
+        messages: rabbitmq_messages,
+        queues: rabbitmq_queues,
+        latency: 0 # RabbitMQ doesn't have a simple latency metric
       }
     }
   end

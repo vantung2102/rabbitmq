@@ -14,13 +14,8 @@ class VietnamWarehouseConsumer
   def work(msg)
     data = JSON.parse(msg)
 
-    Rails.logger.info "🇻🇳 [VIETNAM WAREHOUSE] Processing order ##{data['order_id']}"
-    Rails.logger.info "   → Preparing shipment in Vietnam"
-
     # Simulate warehouse process
     sleep 1
-
-    Rails.logger.info "   ✅ Order ready for Vietnam delivery"
 
     ack!
   rescue => e

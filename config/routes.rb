@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
   root 'home#index'
-  get 'demo', to: 'home#demo'
+  # get 'demo', to: 'home#demo'
 
   # Demo routes
   resources :demo, only: [:index] do
     collection do
+      # Sidekiq demo actions
+      post :send_email
+      post :process_image
+      # RabbitMQ demo actions
       post :create_order
       post :paid_order
       post :shipped_order

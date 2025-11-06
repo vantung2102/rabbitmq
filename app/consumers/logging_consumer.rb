@@ -13,13 +13,8 @@ class LoggingConsumer
   def work(msg)
     data = JSON.parse(msg)
 
-    Rails.logger.info "📝 [LOGGING] Logging event: #{data['event']}"
-    Rails.logger.info "   → Data: #{data['data'].inspect}"
-
     # Simulate logging to file/service
     sleep 0.3
-
-    Rails.logger.info "   ✅ Log written successfully"
 
     ack!
   rescue => e

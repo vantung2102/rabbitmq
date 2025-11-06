@@ -1,287 +1,247 @@
 - provide(:title, "RabbitMQ Deep Dive")
 
-/ Hero Section
-section.hero.bg-gradient-to-br.from-base-300.to-purple-600.py-20.text-center
-  .container.mx-auto.px-4
-    h1.text-5xl.md:text-6xl.font-extrabold.mb-4.text-white
+/ Hero Section - SLIDE 1
+section.hero.bg-gradient-to-br.from-orange-600.via-purple-600.to-teal-600.py-24.text-center.relative.overflow-hidden
+  .absolute.inset-0.bg-black.opacity-10
+  .container.mx-auto.px-4.relative.z-10
+    .mb-6
+      .text-8xl.mb-4 🐰
+    h1.text-6xl.md:text-7xl.font-black.mb-6.text-white.drop-shadow-lg.leading-tight
       | RabbitMQ Deep Dive
-    p.text-2xl.md:text-3xl.text-white.opacity-90.mb-2
+    p.text-3xl.md:text-4xl.text-white.font-light.mb-4.opacity-95
       | Message Broker for Distributed Systems
-    p.text-xl.mt-4.text-white.opacity-80
-      | 👨‍💻 Speaker: Zane
-    p.text-lg.opacity-70.text-white
-      | 📅 RabbitMQ Architecture, Patterns & Implementation
+    .bg-white.bg-opacity-20.backdrop-blur-sm.rounded-2xl.p-6.mt-8.max-w-3xl.mx-auto
+      p.text-xl.text-white.mb-2.font-semibold 👨‍💻 Speaker: Zane
+      p.text-lg.text-white.opacity-90.mb-2 📅 RabbitMQ Architecture, Patterns & Implementation in Rails
+      p.text-base.text-white.opacity-80 🎯 Focus: RabbitMQ (with Sidekiq comparison)
 
-/ Agenda Section
-section.py-16.bg-base-200
+/ Agenda Section - SLIDE 2
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | Agenda
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 📋 Agenda
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
-      - agenda_items = [{ number: "1️⃣", title: "Problem & Solution", desc: "Synchronous vs Asynchronous Processing" }, { number: "2️⃣", title: "Message Queue Fundamentals", desc: "Message Queue & Message Broker" }, { number: "3️⃣", title: "RabbitMQ Deep Dive ⭐", desc: "Architecture, Exchange Types, Reliability" }, { number: "4️⃣", title: "Sidekiq Overview", desc: "Quick comparison with RabbitMQ" }, { number: "5️⃣", title: "Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" }, { number: "6️⃣", title: "Decision Framework", desc: "When to use what" }]
+      - agenda_items = [{ number: "1️⃣", title: "Problem & Solution", desc: "Synchronous vs Asynchronous Processing" }, { number: "2️⃣", title: "Message Queue Fundamentals", desc: "Message Queue & Message Broker" }, { number: "3️⃣", title: "RabbitMQ Deep Dive ⭐", desc: "Architecture, Exchange Types, Reliability" }, { number: "4️⃣", title: "Sidekiq Overview", desc: "Quick comparison with RabbitMQ" }, { number: "5️⃣", title: "Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" }, { number: "6️⃣", title: "Comparison & Decision", desc: "When to use what" }, { number: "7️⃣", title: "Q&A", desc: "Common questions & answers" }]
       - agenda_items.each do |item|
-        .bg-gradient-to-br.from-base-100.to-base-200.p-6.rounded-xl.border-l-4.border-orange-500.transition-transform.hover:translate-x-2
-          .text-3xl.mb-2 = item[:number]
-          .text-xl.font-semibold.mb-1 = item[:title]
-          .text-sm.text-base-content.opacity-70 = item[:desc]
+        .bg-white.p-6.rounded-2xl.shadow-xl.border-l-4.border-orange-500.transition-all.duration-300.hover:-translate-y-2.hover:shadow-2xl.hover:border-orange-600
+          .text-4xl.mb-3 = item[:number]
+          .text-xl.font-bold.mb-2.text-gray-800 = item[:title]
+          .text-sm.text-gray-600.leading-relaxed = item[:desc]
 
-/ Problem Section
-section.py-16.bg-base-100
+/ Problem Section - SLIDE 3
+section.py-20.bg-base-100
   .container.mx-auto.px-4
-    .bg-base-200.rounded-xl.p-8.mt-8
-      .bg-gradient-to-r.from-red-100.to-red-200.p-6.rounded-xl.border-l-6.border-red-500.mb-6
-        h3.text-red-600.text-3xl.font-bold.mb-2
+    .bg-white.rounded-2xl.p-10.mt-8.shadow-2xl.border-2.border-red-200
+      .bg-gradient-to-r.from-red-50.to-red-100.p-8.rounded-2xl.border-l-6.border-red-600.mb-8.shadow-lg
+        h3.text-red-700.text-4xl.font-black.mb-3
           | ❌ THE PROBLEM: Synchronous Processing
-        p.text-red-800.text-xl.m-0
+        p.text-red-900.text-2xl.font-semibold.m-0
           | Scenario: User Registration
 
-      - flow_steps = [{ icon: "👤", text: "User submits form" }, { icon: "⏳", text: "Server creates account", time: "100ms" }, { icon: "⏳", text: "Server sends welcome email", time: "3-5s" }, { icon: "⏳", text: "Server resizes avatar", time: "2-3s" }, { icon: "⏳", text: "Server sends notification", time: "1-2s" }]
-      - flow_steps.each do |step|
-        .bg-white.text-base-300.border-2.border-gray-200.rounded-lg.p-3.mb-3.flex.items-center.gap-4
-          span = step[:icon]
-          span = step[:text]
-          - if step[:time]
-            span.ml-auto.text-red-600.font-bold = step[:time]
+      .bg-gray-50.p-8.rounded-xl.mb-8.border-2.border-gray-300.shadow-lg
+        - flow_steps = [{ icon: "👤", text: "User submits form" }, { icon: "⏳", text: "Server creates account", time: "100ms" }, { icon: "⏳", text: "Server sends welcome email", time: "3-5s" }, { icon: "⏳", text: "Server resizes avatar", time: "2-3s" }, { icon: "⏳", text: "Server sends notification", time: "1-2s" }]
+        - flow_steps.each do |step|
+          .flex.items-center.gap-6.mb-4.p-4.bg-white.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow
+            .text-3xl = step[:icon]
+            .flex-1.text-lg.font-medium.text-gray-800 = step[:text]
+            - if step[:time]
+              .text-red-600.font-bold.text-lg.bg-red-50.px-4.py-2.rounded-lg = step[:time]
+          - unless step == flow_steps.last
+            .text-center.text-red-400.text-3xl.mb-2 ⬇️
 
-      .bg-white.text-base-300.border-2.border-red-500.rounded-lg.p-3.mb-3.flex.items-center.gap-4.font-semibold.bg-red-50
-        span ⏱️
-        span
-          strong Response returned to user
-        span.ml-auto.text-red-600.font-bold.text-lg 6-10 seconds
+        .bg-gradient-to-r.from-red-500.to-red-600.text-white.border-2.border-red-700.rounded-xl.p-6.mt-6.flex.items-center.gap-4.font-bold.shadow-xl
+          .text-3xl ✅
+          .flex-1.text-xl
+            strong Response returned to user
+          .text-2xl.font-black 6-10 seconds
 
-      .bg-gray-50.text-base-300.p-6.rounded-lg.mt-6
-        h4.text-red-600.font-bold.mb-4
-          | Consequences:
-        ul.list-none.p-0
-          li.py-1 ❌ Bad UX → 40% users leave if wait > 3s
-          li.py-1 ❌ Server blocked, can't process other requests
-          li.py-1 ❌ Cannot scale when traffic increases
-          li.py-1 ❌ Single point of failure
+      .bg-red-50.border-2.border-red-300.text-gray-800.p-8.rounded-xl.mt-8.shadow-lg
+        h4.text-red-700.font-black.text-2xl.mb-6
+          | ⚠️ Consequences:
+        ul.list-none.p-0.space-y-3
+          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Bad UX → 40% users leave if wait > 3s
+          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Server blocked, can't process other requests
+          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Cannot scale when traffic increases
+          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Single point of failure
 
-/ Solution Section
-section.py-16.bg-base-200
+/ Solution Section - SLIDE 4
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    .bg-base-100.rounded-xl.p-8.mt-8
-      .bg-gradient-to-r.from-green-100.to-green-200.p-6.rounded-xl.border-l-6.border-green-500.mb-6
-        h3.text-green-600.text-3xl.font-bold
+    .bg-white.rounded-2xl.p-10.mt-8.shadow-2xl.border-2.border-green-200
+      .bg-gradient-to-r.from-green-50.to-green-100.p-8.rounded-2xl.border-l-6.border-green-600.mb-8.shadow-lg
+        h3.text-green-700.text-4xl.font-black
           | ✅ THE SOLUTION: Asynchronous Processing
 
       .grid.grid-cols-1.md:grid-cols-2.gap-8.mt-8
         div
-          .bg-white.text-base-300.border-2.border-gray-200.rounded-lg.p-3.mb-3.flex.items-center.gap-4
-            span 👤
-            span User submits form
-          .bg-white.text-base-300.border-2.border-gray-200.rounded-lg.p-3.mb-3.flex.items-center.gap-4
-            span ⚡
-            span Server creates account
-            span.ml-auto.text-green-600.font-bold 100ms
-          .bg-green-100.border-2.border-green-500.rounded-lg.p-3.mb-3.flex.items-center.gap-4
-            span ✅
-            span
-              strong Server responds immediately
-            span.ml-auto.text-green-600.font-bold.text-lg 200ms total
+          .bg-white.p-6.rounded-lg.border-2.border-gray-200.mb-4
+            h4.text-lg.font-bold.mb-4.text-center Same scenario with Message Queue:
+            - async_steps = [{ icon: "👤", text: "User submits form" }, { icon: "⚡", text: "Server creates account", time: "100ms" }, { icon: "✅", text: "Server responds immediately", time: "200ms total", highlight: true }]
+            - async_steps.each do |step|
+              .flex.items-center.gap-4.mb-3 class="#{'bg-green-50 border-2 border-green-500' if step[:highlight]}"
+                .text-2xl = step[:icon]
+                .flex-1 = step[:text]
+                - if step[:time]
+                  .text-green-600.font-bold = step[:time]
+              - unless step == async_steps.last
+                .text-center.text-gray-400.text-xl.mb-3 ↓
 
-          .bg-gray-50.border-2.border-dashed.border-purple-500.p-4.rounded-lg.mt-4
-            p.font-bold.text-purple-600.mb-2 📬 Background:
-            p.font-mono.text-sm.my-1 ├─ Email job → Queue → Worker
-            p.font-mono.text-sm.my-1 ├─ Resize job → Queue → Worker
-            p.font-mono.text-sm.my-1 └─ Notification → Queue → Worker
+            .bg-purple-50.border-2.border-dashed.border-purple-500.p-4.rounded-lg.mt-4
+              p.font-bold.text-purple-600.mb-2 📬 Background:
+              p.font-mono.text-sm.my-1 ├─ Email job → Queue → Worker processes
+              p.font-mono.text-sm.my-1 ├─ Resize job → Queue → Worker processes
+              p.font-mono.text-sm.my-1 └─ Notification job → Queue → Worker processes
 
-        .bg-green-50.text-base-300.p-6.rounded-xl
-          h4.text-green-600.mb-4 Benefits:
-          ul.list-none.p-0
-            li.py-2 ✅ Great UX (response < 300ms)
-            li.py-2 ✅ Server not blocked
-            li.py-2 ✅ Easy to scale (add workers)
-            li.py-2 ✅ Fault tolerance
-            li.py-2 ✅ Automatic retry on failure
+        .bg-gradient-to-br.from-green-50.to-emerald-50.text-gray-800.p-8.rounded-xl.shadow-xl.border-2.border-green-300
+          h4.text-green-700.mb-6.font-black.text-2xl Benefits:
+          ul.list-none.p-0.space-y-3
+            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Great user experience (response < 300ms)
+            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Server not blocked
+            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Easy to scale (add workers)
+            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Fault tolerance
+            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Automatic retry on failure
 
-/ Exchange Types Section
-section.py-16.bg-base-100
+/ Message Queue Section - SLIDE 5
+section.py-20.bg-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | RabbitMQ Exchange Types
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 📬 What is Message Queue?
 
-    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-4.gap-6.mt-8
-      - exchanges = [{ number: "1", title: "Direct Exchange", mechanism: "Exact match routing key", use_case: "Priority queues, task distribution" }, { number: "2", title: "Fanout Exchange", mechanism: "Broadcast to ALL queues", use_case: "Logging, cache invalidation, notifications" }, { number: "3", title: "Topic Exchange ⭐", mechanism: "Pattern matching (* , #)", use_case: "Event-driven microservices (Most Popular!)", featured: true }, { number: "4", title: "Headers Exchange", mechanism: "Match based on headers", use_case: "Complex business rules (Rarely used)" }]
-      - exchanges.each do |exchange|
-        .bg-base-200.border-3.rounded-2xl.p-8.relative.transition-all.hover:-translate-y-1.hover:border-orange-500 class="#{'border-orange-500 bg-gradient-to-br from-base-200 to-purple-900' if exchange[:featured]}"
-          .absolute.-top-5.left-6.w-10.h-10.bg-orange-500.rounded-full.flex.items-center.justify-center.font-bold.text-xl
-            = exchange[:number]
-          h3.text-2xl.mt-2.mb-4 = exchange[:title]
-          p.text-base-content.opacity-70.mb-4
-            strong Mechanism:
-            = " #{exchange[:mechanism]}"
-          .bg-orange-500.bg-opacity-10.p-4.rounded-lg
-            p.font-semibold.mb-2 🎯 Use Case:
-            p.text-sm.text-base-content.opacity-70.m-0 = exchange[:use_case]
-
-    .bg-gradient-to-r.from-purple-100.to-purple-200.text-base-300.p-6.rounded-xl.mt-8.text-center
-      h4.mb-2 📊 Recommendation:
-      p.m-0
-        strong 70% cases:
-        |  Topic Exchange |
-        strong 20% cases:
-        |  Fanout |
-        strong 10% cases:
-        |  Direct |
-        strong <1% cases:
-        |  Headers
-
-/ Comparison Table Section
-section.py-16.bg-base-200
-  .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | RabbitMQ vs Sidekiq Comparison
-
-    .bg-base-100.rounded-xl.overflow-hidden.mt-8
-      .grid.grid-cols-3.gap-8.p-6.bg-orange-500.font-bold
-        div Feature
-        div RabbitMQ
-        div Sidekiq
-
-      - comparisons = [{ feature: "Type", rabbitmq: "Message Broker", sidekiq: "Background Job Library" }, { feature: "Routing", rabbitmq: "4 Exchange Types", sidekiq: "Queue Names Only", rabbitmq_winner: true }, { feature: "Throughput", rabbitmq: "~20K msg/s", sidekiq: "~100K+ jobs/s", sidekiq_winner: true }, { feature: "Storage", rabbitmq: "Disk + Memory", sidekiq: "In-Memory (RAM)", rabbitmq_winner: true }, { feature: "Multi-Language", rabbitmq: "All Languages", sidekiq: "Ruby Only", rabbitmq_winner: true }, { feature: "Setup", rabbitmq: "Medium-High", sidekiq: "Very Low", sidekiq_winner: true }, { feature: "Monthly Cost", rabbitmq: "$50-400", sidekiq: "$15-200", sidekiq_winner: true }, { feature: "Best For", rabbitmq: "Microservices", sidekiq: "Rails Monolith", both_winner: true }]
-      - comparisons.each do |comp|
-        .grid.grid-cols-3.gap-8.p-6.border-b.border-base-300.hover:bg-orange-500.hover:bg-opacity-5
-          div
-            strong = comp[:feature]
-          div
-            - if comp[:rabbitmq_winner]
-              span.bg-green-500.text-base-300.px-3.py-1.rounded-full.font-bold.text-sm = comp[:rabbitmq]
-            - else
-              = comp[:rabbitmq]
-          div
-            - if comp[:sidekiq_winner]
-              span.bg-green-500.text-base-300.px-3.py-1.rounded-full.font-bold.text-sm = comp[:sidekiq]
-            - elsif comp[:both_winner]
-              span.bg-green-500.text-base-300.px-3.py-1.rounded-full.font-bold.text-sm = comp[:sidekiq]
-            - else
-              = comp[:sidekiq]
-
-    .bg-gradient-to-r.from-green-100.to-green-200.text-green-900.p-8.rounded-xl.mt-8.text-center
-      h3.text-3xl.font-bold.mb-3 ⭐ Hybrid Approach (Recommended)
-      p.text-xl.my-2
-        strong Sidekiq:
-        |  Internal Rails jobs (emails, reports, uploads)
-      p.text-xl.my-2
-        strong RabbitMQ:
-        |  Inter-service communication, event publishing
-      p.mt-4.font-bold Best for: Growing applications & Enterprise scale
-
-/ Message Queue Section
-section.py-16.bg-base-100
-  .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | What is Message Queue?
-
-    .bg-gradient-to-r.from-purple-100.to-purple-200.text-base-300.p-6.rounded-xl.mb-8.border-l-6.border-purple-500
-      p.text-lg.leading-relaxed.m-0
-        strong Definition:
+    .bg-gradient-to-r.from-purple-100.to-purple-200.text-gray-800.p-8.rounded-2xl.mb-10.border-l-6.border-purple-600.shadow-xl
+      p.text-xl.leading-relaxed.m-0.font-semibold
+        strong.text-purple-700 Definition:
         |  Message Queue is a queuing system that stores messages/jobs for later processing, decoupling task creation (producer) from execution (consumer).
 
-    .bg-base-200.p-10.rounded-xl.border-2.border-base-300.mb-8
-      h3.text-center.mb-8.text-2xl 3 Main Components:
-      .flex.items-center.justify-around.flex-wrap.gap-6
-        .text-center
-          .w-24.h-24.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-2xl.flex.items-center.justify-center.text-5xl.mx-auto.mb-4 📤
-          .font-bold.text-lg.mb-1 Producer
-          .text-sm.text-base-content.opacity-70 (Rails App)
-        .text-5xl.text-orange-500 →
-        .text-center
-          .w-24.h-24.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-2xl.flex.items-center.justify-center.text-5xl.mx-auto.mb-4 📬
-          .font-bold.text-lg.mb-1 Queue
-          .text-sm.text-base-content.opacity-70 (Storage)
-        .text-5xl.text-orange-500 →
-        .text-center
-          .w-24.h-24.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-2xl.flex.items-center.justify-center.text-5xl.mx-auto.mb-4 ⚙️
-          .font-bold.text-lg.mb-1 Consumer
-          .text-sm.text-base-content.opacity-70 (Worker)
+    .bg-white.p-12.rounded-2xl.border-2.border-gray-300.mb-10.shadow-2xl
+      h3.text-center.mb-10.text-3xl.font-black.text-gray-800 3 Main Components:
+      .flex.items-center.justify-between.flex-wrap.gap-6.mb-8
+        .text-center.flex-1.min-w-32
+          .w-32.h-32.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-3xl.flex.items-center.justify-center.text-6xl.mx-auto.mb-4.shadow-2xl.hover:scale-110.transition-transform.duration-300 📤
+          .font-black.text-xl.mb-2.text-gray-800 Producer
+          .text-sm.text-gray-600.font-medium (Rails App)
+        .text-5xl.text-orange-500.font-bold →
+        .text-center.flex-1.min-w-32
+          .w-32.h-32.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-3xl.flex.items-center.justify-center.text-6xl.mx-auto.mb-4.shadow-2xl.hover:scale-110.transition-transform.duration-300 📬
+          .font-black.text-xl.mb-2.text-gray-800 Queue
+          .text-sm.text-gray-600.font-medium (Storage)
+        .text-5xl.text-orange-500.font-bold →
+        .text-center.flex-1.min-w-32
+          .w-32.h-32.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-3xl.flex.items-center.justify-center.text-6xl.mx-auto.mb-4.shadow-2xl.hover:scale-110.transition-transform.duration-300 ⚙️
+          .font-black.text-xl.mb-2.text-gray-800 Consumer
+          .text-sm.text-gray-600.font-medium (Worker)
 
-    .grid.grid-cols-1.sm:grid-cols-2.lg:grid-cols-4.gap-5
+      .bg-gradient-to-br.from-blue-50.to-indigo-50.p-8.rounded-xl.mt-10.shadow-xl.border-2.border-blue-300
+        h4.text-2xl.font-black.mb-6.text-center.text-blue-700 Message Flow:
+        .space-y-4
+          .flex.items-center.gap-4
+            .w-12.h-12.bg-gradient-to-br.from-blue-500.to-blue-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-lg.shadow-lg 1
+            span.text-lg.font-semibold.text-gray-800 1. Producer sends job
+          .text-center.text-blue-500.text-3xl.mb-2 ⬇️
+          .flex.items-center.gap-4
+            .w-12.h-12.bg-gradient-to-br.from-blue-500.to-blue-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-lg.shadow-lg 2
+            span.text-lg.font-semibold.text-gray-800 2. Queue stores message
+          .text-center.text-blue-500.text-3xl.mb-2 ⬇️
+          .flex.items-center.gap-4
+            .w-12.h-12.bg-gradient-to-br.from-blue-500.to-blue-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-lg.shadow-lg 3
+            span.text-lg.font-semibold.text-gray-800 3. Consumer fetches job
+          .text-center.text-blue-500.text-3xl.mb-2 ⬇️
+          .flex.items-center.gap-4
+            .w-12.h-12.bg-gradient-to-br.from-blue-500.to-blue-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-lg.shadow-lg 4
+            span.text-lg.font-semibold.text-gray-800 4. Consumer processes
+          .text-center.text-blue-500.text-3xl.mb-2 ⬇️
+          .flex.items-center.gap-4
+            .w-12.h-12.bg-gradient-to-br.from-blue-500.to-blue-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-lg.shadow-lg 5
+            span.text-lg.font-semibold.text-gray-800 5. Consumer acknowledges
+
+    .grid.grid-cols-1.sm:grid-cols-2.lg:grid-cols-4.gap-6
       - features = [{ title: "FIFO", desc: "First In First Out" }, { title: "Asynchronous", desc: "Producer doesn't wait" }, { title: "Decoupling", desc: "Independent components" }, { title: "Scalable", desc: "Add multiple consumers" }]
       - features.each do |feature|
-        .bg-base-200.p-5.rounded-xl.border-l-3.border-teal-500
-          .font-bold.text-lg.mb-1 = feature[:title]
-          .text-sm.text-base-content.opacity-70 = feature[:desc]
+        .bg-gradient-to-br.from-teal-50.to-blue-50.p-6.rounded-xl.border-l-4.border-teal-500.shadow-lg.hover:shadow-xl.transition-shadow
+          .font-black.text-xl.mb-2.text-gray-800 = feature[:title]
+          .text-sm.text-gray-600.font-medium = feature[:desc]
 
-/ Message Broker Section
-section.py-16.bg-base-200
+/ Message Broker Section - SLIDE 6
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | What is Message Broker?
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 📮 What is Message Broker?
 
-    .bg-gradient-to-r.from-purple-100.to-purple-200.text-base-300.p-6.rounded-xl.mb-8.border-l-6.border-purple-500
-      p.text-lg.leading-relaxed.mb-2
-        strong Message Broker = "Smart Post Office"
-      p.text-base.m-0
+    .bg-gradient-to-r.from-purple-100.to-purple-200.text-gray-800.p-8.rounded-2xl.mb-10.border-l-6.border-purple-600.shadow-xl
+      p.text-2xl.leading-relaxed.mb-3.font-black.text-purple-800
+        | Message Broker = "Smart Post Office"
+      p.text-lg.m-0.font-semibold
         | Middleware between Producer and Consumer, ensuring messages are: Received → Routed → Stored → Delivered → Guaranteed
 
-    .grid.grid-cols-1.md:grid-cols-2.gap-8
-      .bg-base-100.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-orange-500.pb-2 Comparison
-        ul.list-none.p-0
-          li.py-2
-            strong Message Queue:
-            |  Data structure (queue)
-          li.py-2
-            strong Message Broker:
-            |  Complete system (queues + routing + persistence)
+    .grid.grid-cols-1.md:grid-cols-2.gap-8.mb-8
+      .bg-white.p-10.rounded-2xl.border-2.border-gray-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-orange-500.pb-4.font-black.text-gray-800 Comparison
+        ul.list-none.p-0.space-y-4
+          li.py-3.px-4.bg-orange-50.rounded-lg
+            strong.text-orange-700.font-bold Message Queue:
+            span.text-gray-700.ml-2  Data structure (queue)
+          li.py-3.px-4.bg-orange-50.rounded-lg
+            strong.text-orange-700.font-bold Message Broker:
+            span.text-gray-700.ml-2  Complete system (queues + routing + persistence)
 
-      .bg-base-100.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-orange-500.pb-2 Popular Brokers
-        ul.list-none.p-0
-          li.py-2 🐇
-            strong RabbitMQ
-            |  - AMQP, feature-rich
-          li.py-2 💾
-            strong Redis
-            |  - In-memory, fast
-          li.py-2 ☕
-            strong Kafka
-            |  - High throughput, streaming
+      .bg-white.p-10.rounded-2xl.border-2.border-gray-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-orange-500.pb-4.font-black.text-gray-800 Popular Brokers
+        ul.list-none.p-0.space-y-4
+          li.py-3.px-4.bg-purple-50.rounded-lg.text-lg.font-medium
+            span.text-2xl.mr-3 🐇
+            strong.text-purple-700 RabbitMQ
+            span.text-gray-700.ml-2  - AMQP, feature-rich (Today's focus)
+          li.py-3.px-4.bg-red-50.rounded-lg.text-lg.font-medium
+            span.text-2xl.mr-3 💾
+            strong.text-red-700 Redis
+            span.text-gray-700.ml-2  - In-memory, simple, fast
+          li.py-3.px-4.bg-blue-50.rounded-lg.text-lg.font-medium
+            span.text-2xl.mr-3 ☕
+            strong.text-blue-700 Kafka
+            span.text-gray-700.ml-2  - High throughput, streaming
 
-/ RabbitMQ Overview Section
-section.py-16.bg-base-100
+/ RabbitMQ Overview Section - SLIDE 7
+section.py-20.bg-gradient-to-b.from-base-100.to-base-200
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
       | 🐇 RabbitMQ Overview
 
-    .text-center.text-7xl.mb-8 🐰
+    .text-center.text-9xl.mb-10.animate-pulse 🐰
 
-    .grid.grid-cols-1.md:grid-cols-2.gap-8.mb-8
-      .bg-base-200.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-orange-500.pb-2 What is RabbitMQ?
-        ul.list-none.p-0
-          li.py-2 ✅ Open-source Message Broker
-          li.py-2 ✅ Follows AMQP protocol
-          li.py-2 ✅ Written in Erlang
-          li.py-2 ✅ Enterprise-grade reliability
-          li.py-2 ✅ 15+ years mature ecosystem
+    .grid.grid-cols-1.md:grid-cols-2.gap-8.mb-10
+      .bg-white.p-10.rounded-2xl.border-2.border-orange-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-orange-500.pb-4.font-black.text-gray-800 What is RabbitMQ?
+        ul.list-none.p-0.space-y-3
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Open-source Message Broker, follows AMQP protocol
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Written in Erlang → Highly concurrent, fault-tolerant
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Enterprise-grade: Reliability, scalability, flexibility
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Mature ecosystem (15+ years)
 
-      .bg-base-200.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-orange-500.pb-2 Why Choose RabbitMQ?
-        ul.list-none.p-0
-          li.py-2 ✅ Guaranteed delivery
-          li.py-2 ✅ Flexible routing (4 types)
-          li.py-2 ✅ High Availability
-          li.py-2 ✅ Management UI
-          li.py-2 ✅ Multi-language support
+      .bg-white.p-10.rounded-2xl.border-2.border-orange-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-orange-500.pb-4.font-black.text-gray-800 Why Choose RabbitMQ?
+        ul.list-none.p-0.space-y-3
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Guaranteed message delivery
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Flexible routing (4 exchange types)
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Clustering & High Availability
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Management UI + Monitoring
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium ✅ Multi-language support
 
-    .bg-gradient-to-r.from-purple-100.to-purple-200.text-base-300.p-6.rounded-xl.border-l-4.border-teal-500
-      p.m-0
-        strong Key Differentiators:
-        |  Complex routing patterns, Publisher confirms, Dead letter exchanges, Message TTL, Priority queues
+    .bg-gradient-to-r.from-purple-100.to-purple-200.text-gray-800.p-8.rounded-2xl.border-l-4.border-teal-500.mt-10.shadow-xl
+      p.mb-4.font-black.text-2xl.text-purple-800 Key Differentiators:
+      .grid.grid-cols-2.md:grid-cols-5.gap-4.text-base
+        - differentiators = ["Complex routing patterns", "Publisher confirms", "Dead letter exchanges", "Message TTL", "Priority queues"]
+        - differentiators.each do |diff|
+          span.bg-white.px-4.py-2.rounded-lg.shadow-sm.font-medium • #{diff}
 
-/ RabbitMQ Architecture Section
-section.py-16.bg-base-200
+/ RabbitMQ Architecture Section - SLIDE 8
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | RabbitMQ Architecture
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 🏗️ RabbitMQ Architecture & Components
 
-    .bg-base-100.p-10.rounded-xl.border-2.border-base-300.mb-8
-      h3.text-center.mb-8.text-2xl Architecture Flow:
-      .flex.items-center.justify-between.flex-wrap.gap-4
-        - arch_components = [{ icon: "📤", name: "Producer" }, { icon: "🔌", name: "Connection" }, { icon: "📡", name: "Channel" }, { icon: "🔀", name: "Exchange" }, { icon: "📬", name: "Queue" }, { icon: "⚙️", name: "Consumer" }]
+    .bg-white.p-12.rounded-2xl.border-2.border-gray-300.mb-10.shadow-2xl
+      h3.text-center.mb-10.text-3xl.font-black.text-gray-800 Architecture Flow:
+      .flex.items-center.justify-between.flex-wrap.gap-4.mb-8
+        - arch_components = [{ icon: "📤", name: "Producer" }, { icon: "🔌", name: "Connection" }, { icon: "📡", name: "Channel" }, { icon: "🔀", name: "Exchange" }, { icon: "🔗", name: "Binding" }, { icon: "📬", name: "Queue" }, { icon: "⚙️", name: "Consumer" }]
         - arch_components.each_with_index do |comp, index|
           .text-center.flex-1.min-w-24
             .w-18.h-18.bg-gradient-to-br.from-orange-500.to-orange-600.rounded-xl.flex.items-center.justify-center.text-4xl.mx-auto.mb-3 = comp[:icon]
@@ -289,121 +249,454 @@ section.py-16.bg-base-200
           - unless index == arch_components.length - 1
             .text-4xl.text-orange-500 →
 
-    .bg-base-100.rounded-xl.overflow-hidden
-      .grid.grid-cols-3.gap-6.p-4.bg-orange-500.font-bold
+    .bg-white.rounded-2xl.overflow-hidden.mb-10.shadow-2xl
+      .grid.grid-cols-3.gap-6.p-6.bg-gradient-to-r.from-orange-500.to-orange-600.font-black.text-white.text-lg
         div Component
         div Role
         div Importance
 
-      - arch_details = [{ component: "Connection", role: "TCP connection to RabbitMQ", importance: "1 app = 1 connection, expensive" }, { component: "Channel", role: "Virtual connection", importance: "Lightweight, multiple/connection" }, { component: "Exchange", role: "Routes messages to queues", importance: "Core routing logic" }, { component: "Queue", role: "Buffer storing messages", importance: "FIFO storage" }]
+      - arch_details = [{ component: "Connection", role: "TCP connection between app and RabbitMQ", importance: "1 app = 1 connection, expensive" }, { component: "Channel", role: "Virtual connection within Connection", importance: "Lightweight, multiple channels/connection" }, { component: "Exchange", role: "Routes messages to queues", importance: "Core routing logic" }, { component: "Binding", role: "Rules linking Exchange → Queue", importance: "Defines routing patterns" }, { component: "Queue", role: "Buffer storing messages for consumer", importance: "FIFO storage" }, { component: "Routing Key", role: "Key for routing message", importance: "Pattern matching" }]
       - arch_details.each do |detail|
-        .grid.grid-cols-3.gap-6.p-4.border-b.border-base-300
+        .grid.grid-cols-3.gap-6.p-6.border-b.border-gray-200.hover:bg-gray-50.transition-colors
           div
-            strong = detail[:component]
-          div = detail[:role]
-          div = detail[:importance]
+            strong.font-bold.text-lg.text-gray-800 = detail[:component]
+          div.text-gray-700 = detail[:role]
+          div.text-gray-600 = detail[:importance]
 
-/ Reliability Mechanisms Section
-section.py-16.bg-base-100
+    .bg-gradient-to-br.from-blue-50.to-indigo-50.border-2.border-blue-500.p-8.rounded-2xl.shadow-xl
+      h4.font-black.text-2xl.text-blue-700.mb-4 Why need Exchange?
+      .grid.grid-cols-1.md:grid-cols-2.gap-4.text-base
+        - exchange_reasons = ["Decoupling: Producer doesn't know which queue processes", "Flexibility: Change routing without modifying code", "Broadcast: 1 message → multiple queues", "Filtering: Conditional routing"]
+        - exchange_reasons.each do |reason|
+          span.bg-white.px-5.py-3.rounded-lg.shadow-sm.font-medium.text-gray-700 ✅ #{reason}
+
+/ Exchange Types Section - SLIDE 9
+section.py-20.bg-gradient-to-b.from-base-100.to-base-200
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | 🛡️ Reliability Mechanisms
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 🔀 RabbitMQ Exchange Types
 
-    .grid.grid-cols-1.sm:grid-cols-2.lg:grid-cols-3.gap-6
-      - reliability_features = [{ icon: "✅", title: "ACK/NACK", desc: "Manual acknowledgement ensures message processed" }, { icon: "💾", title: "Durability", desc: "Persist messages to disk, survive restarts" }, { icon: "📩", title: "Publisher Confirms", desc: "Producer receives confirmation" }, { icon: "💀", title: "Dead Letter Exchange", desc: "Queue for undeliverable messages" }, { icon: "⏰", title: "Message TTL", desc: "Auto-expire messages after timeout" }, { icon: "🔄", title: "Clustering", desc: "Multiple nodes, high availability" }]
+    / Direct Exchange
+    .bg-white.rounded-2xl.p-10.mb-10.border-2.border-blue-500.shadow-2xl.hover:shadow-3xl.transition-shadow
+      h3.text-3xl.font-bold.mb-4.text-blue-600
+        | 1. Direct Exchange
+      .grid.grid-cols-1.md:grid-cols-2.gap-6.mb-6
+        div
+          p.text-lg.mb-4
+            strong Mechanism:
+            |  Exact match routing key
+          .bg-white.p-4.rounded-lg.mb-4
+            p.font-mono.text-sm.mb-2 Message with routing_key = "order.payment"
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm.mb-2 Exchange checks bindings
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm Queue with binding key = "order.payment" receives message
+          p.font-bold.mb-2 ✅ Advantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Simple, easy to understand
+            li High performance (exact match)
+            li Suitable for simple routing
+          p.font-bold.mb-2 ❌ Disadvantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Not flexible
+            li Must know exact queue name
+            li Hard to maintain when scaling
+        div
+          p.font-bold.mb-2 🎯 When to use:
+          ul.list-disc.list-inside.text-sm.mb-4
+            li Priority queues (high, medium, low)
+            li Task distribution by type
+            li Simple 1-to-1 routing
+          .bg-blue-50.p-4.rounded-lg
+            p.font-bold.mb-2 Real example:
+            p.text-sm Logs system:
+            p.font-mono.text-xs.mt-2 "error" → error_queue
+            p.font-mono.text-xs "warning" → warning_queue
+            p.font-mono.text-xs "info" → info_queue
+
+    / Fanout Exchange
+    .bg-white.rounded-2xl.p-10.mb-10.border-2.border-green-500.shadow-2xl.hover:shadow-3xl.transition-shadow
+      h3.text-3xl.font-bold.mb-4.text-green-600
+        | 2. Fanout Exchange
+      .grid.grid-cols-1.md:grid-cols-2.gap-6.mb-6
+        div
+          p.text-lg.mb-4
+            strong Mechanism:
+            |  Broadcast to ALL bound queues (ignore routing key)
+          .bg-white.p-4.rounded-lg.mb-4
+            p.font-mono.text-sm.mb-2 Message arrives at Exchange
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm.mb-2 Broadcast to ALL bound queues
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm Ignore routing key
+          p.font-bold.mb-2 ✅ Advantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Efficient broadcasting
+            li Easy to add consumers
+            li Perfect pub/sub pattern
+          p.font-bold.mb-2 ❌ Disadvantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li No filtering
+            li All queues receive message (can be wasteful)
+            li Cannot control destination
+        div
+          p.font-bold.mb-2 🎯 When to use:
+          ul.list-disc.list-inside.text-sm.mb-4
+            li Logging system (all services need logs)
+            li Cache invalidation (clear cache on all nodes)
+            li Real-time notifications (broadcast to all users)
+            li Event broadcasting
+          .bg-green-50.p-4.rounded-lg
+            p.font-bold.mb-2 Real example:
+            p.text-sm User registered event:
+            p.font-mono.text-xs.mt-2 → Email service (send welcome)
+            p.font-mono.text-xs → Analytics service (track)
+            p.font-mono.text-xs → CRM service (add to pipeline)
+            p.font-mono.text-xs → Notification service (push notification)
+
+    / Topic Exchange
+    .bg-gradient-to-br.from-orange-50.to-yellow-50.rounded-2xl.p-10.mb-10.border-4.border-orange-500.shadow-2xl.hover:shadow-3xl.transition-shadow.relative
+      .absolute.-top-5.left-8.bg-gradient-to-r.from-orange-500.to-orange-600.text-white.px-6.py-2.rounded-full.font-black.text-base.shadow-xl ⭐ MOST POWERFUL
+      h3.text-3xl.font-bold.mb-4.text-orange-600
+        | 3. Topic Exchange ⭐
+      .grid.grid-cols-1.md:grid-cols-2.gap-6.mb-6
+        div
+          p.text-lg.mb-4
+            strong Mechanism:
+            |  Pattern matching with wildcards
+          .bg-white.p-4.rounded-lg.mb-4
+            p.font-bold.text-sm.mb-2 Wildcards:
+            p.font-mono.text-xs.mb-1
+              | * = match exactly 1 word
+            p.font-mono.text-xs
+              | # = match 0 or more words
+            p.text-gray-600.text-sm.mt-4.mb-2 Example:
+            p.font-mono.text-xs Messages: "order.created.vn", "order.paid.us"
+            p.font-mono.text-xs Bindings: "order.*", "*.created.*", "#.vn"
+          p.font-bold.mb-2 ✅ Advantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Extremely flexible
+            li Powerful pattern matching
+            li Easy to extend (add new patterns)
+            li One message → multiple queues based on logic
+          p.font-bold.mb-2 ❌ Disadvantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li More complex than Direct/Fanout
+            li Slower performance (pattern matching)
+            li Easy to confuse with wildcards
+        div
+          p.font-bold.mb-2 🎯 When to use:
+          ul.list-disc.list-inside.text-sm.mb-4
+            li Event-driven microservices
+            li Multi-tenant systems
+            li Geographical routing
+            li Hierarchical topics
+          .bg-orange-50.p-4.rounded-lg
+            p.font-bold.mb-2 Real example:
+            p.text-sm E-commerce events:
+            p.font-mono.text-xs.mt-2 "order.created.shop1.vn"
+            p.font-mono.text-xs Bindings:
+            p.font-mono.text-xs "order.created.*" → inventory_service
+            p.font-mono.text-xs "order.paid.#" → accounting_service
+            p.font-mono.text-xs "#.vn" → vietnam_warehouse
+
+    / Headers Exchange
+    .bg-white.rounded-2xl.p-10.mb-10.border-2.border-purple-500.shadow-2xl.hover:shadow-3xl.transition-shadow
+      h3.text-3xl.font-bold.mb-4.text-purple-600
+        | 4. Headers Exchange
+      .grid.grid-cols-1.md:grid-cols-2.gap-6.mb-6
+        div
+          p.text-lg.mb-4
+            strong Mechanism:
+            |  Match based on message headers
+          .bg-white.p-4.rounded-lg.mb-4
+            p.font-mono.text-sm.mb-2
+              | Message headers: {format: "pdf", priority: "high"}
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm Exchange matches headers with bindings
+            p.text-gray-600.text-sm ↓
+            p.font-mono.text-sm Queue with matching headers receives message
+          p.font-bold.mb-2 ✅ Advantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Most complex routing logic
+            li Not dependent on routing key
+            li Multiple criteria matching
+          p.font-bold.mb-2 ❌ Disadvantages:
+          ul.list-disc.list-inside.text-sm.mb-2
+            li Lowest performance
+            li Complex configuration
+            li Rarely used in practice
+        div
+          p.font-bold.mb-2 🎯 When to use:
+          ul.list-disc.list-inside.text-sm.mb-4
+            li Content-based routing
+            li Complex business rules
+            li Legacy system integration
+          .bg-purple-50.p-4.rounded-lg
+            p.font-bold.mb-2 Real example:
+            p.text-sm File processing:
+            p.font-mono.text-xs.mt-2
+              | Headers: {format: "pdf", pages: 100}
+            p.font-mono.text-xs Routes:
+            p.font-mono.text-xs
+              | {format: "pdf"} → pdf_service
+            p.font-mono.text-xs
+              | {pages: >50} → batch_processor
+
+    / Comparison Table
+    .bg-white.rounded-2xl.p-10.mb-10.shadow-2xl
+      h3.text-3xl.font-black.mb-8.text-center.text-gray-800 Compare 4 Exchange Types
+      .overflow-x-auto
+        table.w-full.bg-white.rounded-xl.shadow-lg
+          thead.bg-gradient-to-r.from-orange-500.to-orange-600.text-white
+            tr
+              th.p-4.text-left Type
+              th.p-4.text-center Performance
+              th.p-4.text-center Complexity
+              th.p-4.text-center Flexibility
+              th.p-4.text-center Use Case
+          tbody
+            - exchange_comparison = [{ type: "Direct", perf: "⭐⭐⭐⭐⭐", comp: "⭐", flex: "⭐", use: "Simple routing" }, { type: "Fanout", perf: "⭐⭐⭐⭐⭐", comp: "⭐", flex: "⭐⭐", use: "Broadcasting" }, { type: "Topic", perf: "⭐⭐⭐", comp: "⭐⭐⭐", flex: "⭐⭐⭐⭐⭐", use: "Event-driven (Most popular)" }, { type: "Headers", perf: "⭐⭐", comp: "⭐⭐⭐⭐⭐", flex: "⭐⭐⭐⭐", use: "Complex rules (Rarely used)" }]
+            - exchange_comparison.each do |ex|
+              tr.border-b.hover:bg-gray-50.transition-colors
+                td.p-5.font-black.text-lg.text-gray-800 = ex[:type]
+                td.p-5.text-center.text-xl = ex[:perf]
+                td.p-5.text-center.text-xl = ex[:comp]
+                td.p-5.text-center.text-xl = ex[:flex]
+                td.p-5.text-center.text-base.font-medium.text-gray-700 = ex[:use]
+
+      .bg-gradient-to-r.from-purple-100.to-purple-200.p-8.rounded-2xl.mt-8.text-center.shadow-xl.border-2.border-purple-300
+        h4.mb-4.font-black.text-2xl.text-purple-800 📊 Recommendation:
+        p.m-0.text-lg.font-semibold
+          strong.text-purple-700 70% cases:
+          |  Topic Exchange |
+          strong.text-purple-700 20% cases:
+          |  Fanout |
+          strong.text-purple-700 10% cases:
+          |  Direct |
+          strong.text-purple-700 <1% cases:
+          |  Headers
+
+/ Message Flow Section - SLIDE 10
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
+  .container.mx-auto.px-4
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 🔄 RabbitMQ Message Flow
+    .bg-white.p-10.rounded-2xl.border-2.border-gray-300.shadow-2xl
+      h3.text-3xl.font-black.mb-8.text-center.text-gray-800 Complete Message Lifecycle:
+      .space-y-4
+        - flow_steps = ["Producer creates message", "Publish to Exchange (with routing key)", "Exchange evaluates routing rules", "Message routed to Queue(s) based on bindings", "Queue persists message (if durable)", "Consumer fetches message from Queue", "Consumer processes message", "Consumer sends ACK back to RabbitMQ", "RabbitMQ removes message from Queue"]
+        - flow_steps.each_with_index do |step, index|
+          .flex.items-center.gap-6.mb-4
+            .w-14.h-14.bg-gradient-to-br.from-orange-500.to-orange-600.text-white.rounded-full.flex.items-center.justify-center.font-black.text-xl.shadow-lg = index + 1
+            span.text-xl.font-semibold.text-gray-800 = step
+          - unless index == flow_steps.length - 1
+            .text-center.text-orange-500.text-4xl.mb-2 ⬇️
+
+      .bg-gradient-to-br.from-blue-50.to-indigo-50.border-2.border-blue-500.p-8.rounded-xl.mt-10.shadow-xl
+        h4.font-black.text-2xl.mb-6.text-blue-700 Key Points:
+        ul.list-none.space-y-4
+          li.p-4.bg-white.rounded-lg.shadow-sm
+            strong.text-blue-700.font-bold At-least-once delivery:
+            span.text-gray-700  Message not deleted until consumer ACKs
+          li.p-4.bg-white.rounded-lg.shadow-sm
+            strong.text-blue-700.font-bold Message Persistence:
+            span.text-gray-700  Queue must be durable, message must be persistent
+          li.p-4.bg-white.rounded-lg.shadow-sm
+            strong.text-blue-700.font-bold Prefetch:
+            span.text-gray-700  Limit number of messages consumer receives at once
+
+/ Reliability Mechanisms Section - SLIDE 11
+section.py-20.bg-gradient-to-b.from-base-100.to-base-200
+  .container.mx-auto.px-4
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 🛡️ RabbitMQ Reliability Mechanisms
+
+    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-8
+      - reliability_features = [{ icon: "✅", title: "Acknowledgements (ACK/NACK/REJECT)", desc: "Manual ACK is safe - message kept until ACK. Auto ACK = message lost if consumer crashes." }, { icon: "💾", title: "Message Durability", desc: "Durable Queue + Persistent Messages = survive RabbitMQ restart" }, { icon: "📩", title: "Publisher Confirms", desc: "Producer receives confirmation from RabbitMQ, ensures message was accepted" }, { icon: "💀", title: "Dead Letter Exchange (DLX)", desc: "Queue for undeliverable messages (TTL expired, queue full, consumer reject)" }, { icon: "⏰", title: "Message TTL & Queue Length", desc: "TTL: Message expires after X seconds. Max Length: Queue limits number of messages" }, { icon: "🔄", title: "Clustering & Mirroring", desc: "Multiple RabbitMQ nodes, queue mirroring, high availability, no single point of failure" }]
       - reliability_features.each do |feature|
-        .bg-gradient-to-br.from-base-50.to-purple-50.border-2.border-orange-500.rounded-xl.p-6
-          .text-5xl.text-center.mb-2 = feature[:icon]
-          h3.text-center.text-lg.mb-2 = feature[:title]
-          p.text-center.text-sm.text-gray-600.leading-relaxed.m-0 = feature[:desc]
+        .bg-white.border-2.border-orange-500.rounded-2xl.p-8.shadow-xl.hover:shadow-2xl.hover:-translate-y-1.transition-all
+          .text-6xl.text-center.mb-4 = feature[:icon]
+          h3.text-center.text-xl.mb-4.font-black.text-gray-800 = feature[:title]
+          p.text-center.text-base.text-gray-700.leading-relaxed.m-0 = feature[:desc]
 
-/ Sidekiq Overview Section
-section.py-16.bg-base-200
+/ Use Cases & Patterns Section - SLIDE 12
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
-      | ⚡ Sidekiq Overview
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | 🎯 RabbitMQ Use Cases & Patterns
 
-    .grid.grid-cols-1.md:grid-cols-2.gap-8
-      .bg-base-100.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-green-500.pb-2 What is Sidekiq?
-        ul.list-none.p-0
-          li.py-2 Background job processor for Ruby/Rails
-          li.py-2 Uses Redis as backend
-          li.py-2 Thread-based architecture
+    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6.mb-8
+      - patterns = [{ name: "Work Queue", desc: "Multiple workers compete for jobs, load distribution", use: "Background jobs, task processing" }, { name: "Pub/Sub", desc: "Broadcast messages to all subscribers", use: "Notifications, logging, cache invalidation" }, { name: "Routing", desc: "Selective message delivery based on criteria", use: "Log levels, priority routing" }, { name: "Topics", desc: "Pattern-based routing", use: "Event-driven microservices" }, { name: "RPC (Request/Reply)", desc: "Synchronous-like behavior over async system", use: "Remote procedure calls" }, { name: "Priority Queues", desc: "High priority messages processed first", use: "Critical vs normal tasks" }]
+      - patterns.each do |pattern|
+        .bg-white.p-8.rounded-2xl.border-2.border-gray-300.shadow-xl.hover:shadow-2xl.hover:-translate-y-1.transition-all
+          h3.text-2xl.font-black.mb-3.text-orange-600 = pattern[:name]
+          p.text-base.text-gray-700.mb-4.font-medium = pattern[:desc]
+          p.text-sm.text-gray-600.bg-orange-50.px-4.py-2.rounded-lg
+            strong.font-bold Use:
+            = " #{pattern[:use]}"
 
-      .bg-base-100.p-8.rounded-xl.border.border-base-300
-        h3.text-2xl.mb-4.border-b-3.border-green-500.pb-2 Highlights
-        ul.list-none.p-0
-          li.py-2 ✅ Extremely fast (100K+ jobs/sec)
-          li.py-2 ✅ Simple setup
-          li.py-2 ✅ Beautiful Web UI
-          li.py-2 ✅ Best Rails integration
-          li.py-2 ❌ No advanced routing
+    .bg-gradient-to-br.from-green-50.to-emerald-50.border-2.border-green-500.p-8.rounded-2xl.shadow-xl
+      h4.font-black.text-2xl.mb-6.text-green-700 Common Use Cases:
+      .grid.grid-cols-2.md:grid-cols-4.gap-4.text-base
+        - use_cases = ["Microservices communication", "Event-driven architecture", "Decoupling services", "Load balancing", "Async processing", "Data pipeline", "Message broadcasting", "Priority task handling"]
+        - use_cases.each do |use_case|
+          .bg-white.px-4.py-3.rounded-lg.shadow-sm.font-medium.text-gray-700 • #{use_case}
 
-/ Decision Framework Section
-section.py-16.bg-base-100
+/ Sidekiq Overview Section - SLIDE 13
+section.py-20.bg-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | ⚡ Sidekiq (Redis Queue) Overview
+
+    .grid.grid-cols-1.md:grid-cols-2.gap-8.mb-8
+      .bg-white.p-10.rounded-2xl.border-2.border-green-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-green-500.pb-4.font-black.text-gray-800 What is Sidekiq?
+        ul.list-none.p-0.space-y-3
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium Background job processor for Ruby/Rails
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium Uses Redis as message queue backend
+          li.py-3.px-4.bg-green-50.rounded-lg.text-lg.font-medium Thread-based architecture
+
+      .bg-white.p-10.rounded-2xl.border-2.border-green-300.shadow-2xl
+        h3.text-3xl.mb-6.border-b-4.border-green-500.pb-4.font-black.text-gray-800 Highlights
+        ul.list-none.p-0.space-y-2
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Extremely fast (100K+ jobs/sec)
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Simple setup
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Beautiful Web UI
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Best Rails integration
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Automatic retry
+          li.py-2.px-4.bg-red-50.rounded-lg.text-base.font-medium ❌ No advanced routing
+          li.py-2.px-4.bg-yellow-50.rounded-lg.text-base.font-medium ⚠️ Persistence depends on Redis
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Faster for simple jobs
+          li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Easier setup & maintenance
+
+/ Detailed Comparison Section - SLIDE 14
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
+  .container.mx-auto.px-4
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
+      | ⚖️ Detailed Comparison: RabbitMQ vs Sidekiq
+
+    .space-y-8
+      - comparison_categories = [{ title: "Architecture & Protocol", items: [{ aspect: "Type", rabbitmq: "Message Broker (standalone)", sidekiq: "Background job library" }, { aspect: "Protocol", rabbitmq: "AMQP (standardized)", sidekiq: "Redis protocol" }, { aspect: "Storage", rabbitmq: "Disk-based + Memory", sidekiq: "In-memory (RAM only)" }, { aspect: "Language", rabbitmq: "Erlang (highly concurrent)", sidekiq: "Ruby + Redis" }] }, { title: "Performance & Scalability", items: [{ aspect: "Throughput", rabbitmq: "~20,000 msg/s", sidekiq: "~100,000+ jobs/s", winner: "sidekiq" }, { aspect: "Latency", rabbitmq: "~50ms (p99)", sidekiq: "~10ms (p99)", winner: "sidekiq" }, { aspect: "Memory Usage", rabbitmq: "Medium-High", sidekiq: "Low (thread-based)", winner: "sidekiq" }, { aspect: "Scaling", rabbitmq: "Horizontal (cluster)", sidekiq: "Horizontal (multiple processes)", winner: "tie" }] }, { title: "Routing & Flexibility", items: [{ aspect: "Routing Types", rabbitmq: "4 exchange types", sidekiq: "Queue names only", winner: "rabbitmq" }, { aspect: "Pattern Matching", rabbitmq: "✅ Wildcards (*, #)", sidekiq: "❌ None", winner: "rabbitmq" }, { aspect: "Broadcast", rabbitmq: "✅ Fanout exchange", sidekiq: "❌ Manual implementation", winner: "rabbitmq" }, { aspect: "Topic-based", rabbitmq: "✅ Topic exchange", sidekiq: "❌ Not supported", winner: "rabbitmq" }] }, { title: "Reliability & Guarantees", items: [{ aspect: "Persistence", rabbitmq: "✅ Disk-based, durable", sidekiq: "⚠️ Optional (RDB/AOF)", winner: "rabbitmq" }, { aspect: "Publisher Confirms", rabbitmq: "✅ Built-in", sidekiq: "❌ None", winner: "rabbitmq" }, { aspect: "Message TTL", rabbitmq: "✅ Per-message or queue", sidekiq: "⚠️ Manual implementation", winner: "rabbitmq" }, { aspect: "Data Loss Risk", rabbitmq: "Very Low", sidekiq: "Medium (if Redis crashes)", winner: "rabbitmq" }] }, { title: "Development & Integration", items: [{ aspect: "Setup Complexity", rabbitmq: "Medium-High", sidekiq: "Very Low", winner: "sidekiq" }, { aspect: "Learning Curve", rabbitmq: "Steep", sidekiq: "Gentle", winner: "sidekiq" }, { aspect: "Rails Integration", rabbitmq: "⚠️ Needs Sneakers/Bunny", sidekiq: "✅ Native, seamless", winner: "sidekiq" }, { aspect: "Multi-language", rabbitmq: "✅ All languages", sidekiq: "❌ Ruby only", winner: "rabbitmq" }] }, { title: "Cost & Infrastructure", items: [{ aspect: "RAM Required", rabbitmq: "2-4GB base", sidekiq: "512MB - 2GB", winner: "sidekiq" }, { aspect: "Monthly Cost", rabbitmq: "~$50-400 (cloud)", sidekiq: "~$15-200 (cloud)", winner: "sidekiq" }, { aspect: "Maintenance", rabbitmq: "Medium effort", sidekiq: "Low effort", winner: "sidekiq" }, { aspect: "DevOps Complexity", rabbitmq: "Higher", sidekiq: "Lower", winner: "sidekiq" }] }]
+      - comparison_categories.each do |category|
+        .bg-white.rounded-2xl.p-8.border-2.border-gray-300.shadow-2xl.mb-8
+          h3.text-3xl.font-black.mb-6.text-orange-600 = category[:title]
+          .overflow-x-auto
+            table.w-full.shadow-lg
+              thead.bg-gradient-to-r.from-orange-500.to-orange-600.text-white
+                tr
+                  th.p-3.text-left Aspect
+                  th.p-3.text-left RabbitMQ
+                  th.p-3.text-left Sidekiq
+              tbody
+                - category[:items].each do |item|
+                  tr.border-b.hover:bg-gray-50.transition-colors
+                    td.p-4.font-bold.text-lg.text-gray-800 = item[:aspect]
+                    td.p-4.text-base class="#{'bg-green-100 font-semibold' if item[:winner] == 'rabbitmq'}"
+                      = item[:rabbitmq]
+                      - if item[:winner] == "rabbitmq"
+                        span.ml-2.text-green-600.font-bold.text-xl 🏆
+                    td.p-4.text-base class="#{'bg-green-100 font-semibold' if item[:winner] == 'sidekiq'}"
+                      = item[:sidekiq]
+                      - if item[:winner] == "sidekiq"
+                        span.ml-2.text-green-600.font-bold.text-xl 🏆
+
+    .bg-gradient-to-r.from-green-100.to-green-200.p-10.rounded-2xl.mt-10.text-center.shadow-2xl.border-2.border-green-400
+      h3.text-4xl.font-black.mb-6.text-green-800 Summary Score
+      .grid.grid-cols-2.md:grid-cols-5.gap-6.mb-6
+        - scores = [{ cat: "Performance", rabbitmq: "4/5", sidekiq: "5/5" }, { cat: "Reliability", rabbitmq: "5/5", sidekiq: "3/5" }, { cat: "Flexibility", rabbitmq: "5/5", sidekiq: "2/5" }, { cat: "Ease of Use", rabbitmq: "3/5", sidekiq: "5/5" }, { cat: "Cost", rabbitmq: "3/5", sidekiq: "5/5" }]
+        - scores.each do |score|
+          .bg-white.p-6.rounded-xl.shadow-lg
+            .font-black.text-base.mb-3.text-gray-800 = score[:cat]
+            .text-orange-600.font-black.text-xl.mb-1 RabbitMQ: #{score[:rabbitmq]}
+            .text-green-600.font-black.text-xl Sidekiq: #{score[:sidekiq]}
+      .bg-white.p-6.rounded-xl.inline-block.shadow-xl.mb-6
+        .font-black.text-2xl
+          strong.text-gray-800 TOTAL:
+          span.text-orange-600.ml-2 RabbitMQ: 20/25
+          span.text-gray-400.mx-2 |
+          span.text-green-600 Sidekiq: 20/25
+      p.mt-6.font-bold.text-xl.text-gray-800 Conclusion: No absolute winner - Depends on use case!
+
+/ Decision Framework Section - SLIDE 15
+section.py-20.bg-base-100
+  .container.mx-auto.px-4
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
       | 🎯 When to Use What?
 
-    .bg-base-200.p-8.rounded-xl.border-2.border-base-300.mb-8
-      h3.mb-6.text-2xl Decision Matrix:
+    .bg-white.p-10.rounded-2xl.border-2.border-gray-300.mb-10.shadow-2xl
+      h3.mb-8.text-3xl.font-black.text-gray-800 Decision Matrix:
+      .overflow-x-auto
+        table.w-full.bg-white.rounded-xl.shadow-lg
+          thead.bg-gradient-to-r.from-orange-500.to-orange-600.text-white
+            tr
+              th.p-4.text-left Requirement
+              th.p-4.text-left Recommendation
+              th.p-4.text-left Reason
+          tbody
+            - decisions = [{ req: "Rails monolith app", rec: "Sidekiq", reason: "Simple, fast, Rails-optimized" }, { req: "Microservices (2+ services)", rec: "RabbitMQ", reason: "Inter-service communication" }, { req: "Multi-language environment", rec: "RabbitMQ", reason: "Language-agnostic" }, { req: "Complex routing needs", rec: "RabbitMQ", reason: "Topic/Fanout exchanges" }, { req: "Simple background jobs", rec: "Sidekiq", reason: "Overkill to use RabbitMQ" }, { req: "Mission-critical data", rec: "RabbitMQ", reason: "Better persistence" }, { req: "Budget constraints", rec: "Sidekiq", reason: "Cheaper infrastructure" }, { req: "Need pattern matching", rec: "RabbitMQ", reason: "Wildcards support" }, { req: "Event-driven architecture", rec: "RabbitMQ", reason: "Pub/Sub patterns" }, { req: "Quick MVP", rec: "Sidekiq", reason: "Faster setup" }, { req: "Enterprise scale", rec: "RabbitMQ", reason: "Better for large systems" }]
+            - decisions.each do |decision|
+              tr.border-b.hover:bg-gray-50.transition-colors
+                td.p-5.font-bold.text-lg.text-gray-800 = decision[:req]
+                td.p-5.text-green-600.font-black.text-xl = decision[:rec]
+                td.p-5.text-base.text-gray-700 = decision[:reason]
 
-      - decisions = [{ question: "Rails monolith app?", answer: "→ Use Sidekiq (Simple, fast, Rails-optimized)" }, { question: "Microservices (2+ services)?", answer: "→ Use RabbitMQ (Inter-service communication)" }, { question: "Complex routing needs?", answer: "→ Use RabbitMQ (Topic/Fanout exchanges)" }, { question: "Mission-critical data?", answer: "→ Use RabbitMQ (Better persistence)" }, { question: "Event-driven architecture?", answer: "→ Use RabbitMQ (Pub/Sub patterns)" }]
-      - decisions.each do |decision|
-        .bg-orange-500.bg-opacity-10.p-5.rounded-lg.mb-4.border-l-4.border-orange-500
-          .font-bold.text-lg.mb-2 = decision[:question]
-          .text-green-600.font-semibold = decision[:answer]
+    .bg-gradient-to-r.from-green-100.to-green-200.p-10.rounded-2xl.mb-10.shadow-2xl.border-2.border-green-400
+      h3.text-4xl.font-black.mb-6.text-center.text-green-800 ⭐ Pattern 3: Hybrid (Recommended)
+      .bg-white.p-8.rounded-xl.mb-6.shadow-xl
+        p.text-lg.font-bold.mb-2 Best for: Growing applications
+        .font-mono.text-sm.mt-4
+          p Rails App
+          p.ml-4 ├─ Sidekiq: Internal background jobs
+          p.ml-8 ├─ Send emails
+          p.ml-8 ├─ Process uploads
+          p.ml-8 └─ Generate reports
+          p.ml-4 └─ RabbitMQ: External communication
+          p.ml-8 ├─ Publish events to other services
+          p.ml-8 ├─ Receive events from services
+          p.ml-8 └─ Complex routing patterns
+      p.mt-4.font-bold Example: Shopify, GitLab, large platforms
 
-    .bg-gradient-to-r.from-green-100.to-green-200.text-green-900.p-8.rounded-xl.text-center
-      h3.text-3xl.font-bold.mb-3 ⭐ Pattern 3: Hybrid (Recommended)
-      p.text-xl.my-2
-        strong Sidekiq:
-        |  Internal Rails jobs (emails, uploads, reports)
-      p.text-xl.my-2
-        strong RabbitMQ:
-        |  External communication (publish/receive events, complex routing)
-      p.mt-4.font-bold Best for: Growing applications, Enterprise scale
+    .bg-gradient-to-r.from-purple-100.to-purple-200.p-6.rounded-xl
+      h4.mb-4.font-bold.text-xl Growth Path:
+      - growth_stages = [{ stage: "Stage 1: MVP / Small App", use: "Sidekiq only", why: "Simple, fast to build" }, { stage: "Stage 2: Growing App", use: "Sidekiq + Redis", why: "Add more workers, queues" }, { stage: "Stage 3: Multiple Services Emerge", use: "Add RabbitMQ for service communication", why: "Keep Sidekiq for internal jobs" }, { stage: "Stage 4: Microservices Architecture", use: "Primary: RabbitMQ for all services", why: "Optional: Sidekiq in Rails services" }]
+      - growth_stages.each do |stage|
+        .bg-white.p-4.rounded-lg.mb-3
+          .font-bold.text-orange-600.mb-1 = stage[:stage]
+          .text-sm
+            strong Use:
+            = " #{stage[:use]}"
+          .text-sm.text-gray-600
+            strong Why:
+            = " #{stage[:why]}"
 
-    .bg-gradient-to-r.from-purple-100.to-purple-200.text-base-300.p-6.rounded-xl.mt-8
-      h4.mb-4 Growth Path:
-      p.my-2
-        strong Stage 1 (MVP):
-        |  Sidekiq only
-      p.my-2
-        strong Stage 2 (Growing):
-        |  Sidekiq + Redis
-      p.my-2
-        strong Stage 3 (Multiple Services):
-        |  Add RabbitMQ
-      p.my-2
-        strong Stage 4 (Microservices):
-        |  RabbitMQ primary + Optional Sidekiq
-
-/ Q&A Section
-section.py-16.bg-base-200
+/ Q&A Section - SLIDE 17
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
-    h2.section-title.text-4xl.font-bold.text-center.mb-8.text-orange-500
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
       | ❓ Q&A
 
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
       - qa_items = [{ q: "When to use RabbitMQ vs Sidekiq?", a: "See decision framework. RabbitMQ for microservices, complex routing. Sidekiq for Rails monolith." }, { q: "Can RabbitMQ replace Sidekiq?", a: "Yes, but may be overkill for simple Rails apps. Hybrid approach is often best." }, { q: "Performance comparison?", a: "Sidekiq: ~100K+ jobs/s, In-memory. RabbitMQ: ~20K msg/s, Disk-based." }, { q: "How does cost differ?", a: "RabbitMQ: $50-400/month. Sidekiq: $15-200/month. RabbitMQ requires more infrastructure." }, { q: "How to migrate from Sidekiq?", a: "Gradual: Keep Sidekiq for internal jobs, add RabbitMQ for inter-service. Use Sneakers gem." }, { q: "Is RabbitMQ difficult to maintain?", a: "Medium complexity. Requires DevOps knowledge but management UI helps." }]
       - qa_items.each do |item|
-        .bg-base-100.p-6.rounded-xl.border-l-3.border-teal-500
-          .font-bold.text-lg.mb-2 = item[:q]
-          .text-sm.text-base-content.opacity-70 = item[:a]
+        .bg-white.p-8.rounded-2xl.border-l-4.border-teal-500.shadow-xl.hover:shadow-2xl.hover:-translate-y-1.transition-all
+          .font-black.text-xl.mb-4.text-gray-800 = item[:q]
+          .text-base.text-gray-700.leading-relaxed = item[:a]
 
-/ Thank You Section
-section.py-20.bg-gradient-to-br.from-purple-600.to-teal-500
-  .container.mx-auto.px-4.text-center
-    .text-9xl.mb-4 🙏
-    h2.text-5xl.md:text-6xl.font-bold.mb-4.text-white Thank You!
-    p.text-xl.text-white.opacity-90.mb-2 📧 Email: zane@example.com
-    p.text-xl.text-white.opacity-90.mb-2 💼 LinkedIn: /in/zane
-    p.text-xl.text-white.opacity-90.mb-8 🐙 GitHub: github.com/zane/rabbitmq-demo
+/ Thank You Section - SLIDE 18
+section.py-24.bg-gradient-to-br.from-purple-700.via-purple-600.to-teal-600.relative.overflow-hidden
+  .absolute.inset-0.bg-black.opacity-20
+  .container.mx-auto.px-4.text-center.relative.z-10
+    .text-9xl.mb-6.animate-bounce 🙏
+    h2.text-6xl.md:text-7xl.font-black.mb-6.text-white.drop-shadow-2xl Thank You!
+    .bg-white.bg-opacity-20.backdrop-blur-md.rounded-2xl.p-8.max-w-2xl.mx-auto.mb-8.shadow-2xl
+      p.text-2xl.text-white.font-semibold.mb-3 📧 Email: zane@example.com
+      p.text-2xl.text-white.font-semibold.mb-3 💼 LinkedIn: /in/zane
+      p.text-2xl.text-white.font-semibold.mb-0 🐙 GitHub: github.com/zane/rabbitmq-demo
 
-    .bg-white.bg-opacity-10.p-6.rounded-xl.backdrop-blur-lg.max-w-2xl.mx-auto
-      h3.text-white.mb-4.text-2xl 🔗 Useful Resources
-      p.text-white.opacity-90.my-2 🐇 rabbitmq.com
-      p.text-white.opacity-90.my-2 ⚡ sidekiq.org
-      p.text-white.opacity-90.my-2 📚 amqp.org
+    .bg-white.bg-opacity-20.backdrop-blur-md.p-8.rounded-2xl.max-w-2xl.mx-auto.shadow-2xl.border-2.border-white.border-opacity-30
+      h3.text-white.mb-6.text-3xl.font-black 🔗 Useful Resources
+      .space-y-3
+        p.text-xl.text-white.font-semibold.my-3 🐇 rabbitmq.com
+        p.text-xl.text-white.font-semibold.my-3 ⚡ sidekiq.org
+        p.text-xl.text-white.font-semibold.my-3 📚 amqp.org

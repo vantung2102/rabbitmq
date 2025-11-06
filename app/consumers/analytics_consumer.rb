@@ -13,12 +13,8 @@ class AnalyticsConsumer
   def work(msg)
     data = JSON.parse(msg)
 
-    Rails.logger.info "📊 [ANALYTICS] Tracking event: #{data['event']}"
-
     # Simulate analytics tracking
     sleep 0.5
-
-    Rails.logger.info "   ✅ Event tracked successfully"
 
     ack!
   rescue => e

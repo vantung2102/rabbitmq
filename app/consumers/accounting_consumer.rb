@@ -14,13 +14,8 @@ class AccountingConsumer
   def work(msg)
     data = JSON.parse(msg)
 
-    Rails.logger.info "💰 [ACCOUNTING] Processing payment for order ##{data['order_id']}"
-    Rails.logger.info "   → Recording revenue: $#{data['amount']}"
-
     # Simulate accounting process
     sleep 1.5
-
-    Rails.logger.info "   ✅ Payment recorded successfully"
 
     ack!
   rescue => e

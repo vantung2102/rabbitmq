@@ -14,11 +14,9 @@ Sneakers.configure(
   heartbeat: 30,
   hooks: {
     before_fork: -> {
-      Rails.logger.info "Sneakers worker forking..."
       ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord)
     },
     after_fork: -> {
-      Rails.logger.info "Sneakers worker forked!"
       ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
     }
   }

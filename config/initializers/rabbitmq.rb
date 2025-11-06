@@ -18,8 +18,6 @@ module RabbitMQConfig
 
       # Setup exchanges
       setup_exchanges
-
-      Rails.logger.info "✅ RabbitMQ connected successfully!"
     rescue => e
       Rails.logger.error "❌ RabbitMQ connection failed: #{e.message}"
     end
@@ -39,8 +37,6 @@ module RabbitMQConfig
 
       # Dead Letter Exchange
       @dlx_exchange = @channel.fanout('demo.dlx', durable: true)
-
-      Rails.logger.info "✅ Exchanges created: direct, fanout, topic, headers, dlx"
     end
 
     def direct_exchange
@@ -70,9 +66,11 @@ module RabbitMQConfig
   end
 end
 
-# Initialize on Rails startup
-if defined?(Rails::Server)
-  Rails.application.config.after_initialize do
+# Initialize on Rails startup (for both server and console)
+Rails.application.config.after_initialize do
+  begin
     RabbitMQConfig.setup
+  rescue => e
+    Rails.logger.error "⚠️  RabbitMQ setup failed (will retry on first use): #{e.message}"
   end
 end

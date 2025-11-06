@@ -5,6 +5,13 @@ section.py-16.bg-base-100
     h1.text-center.mb-12.text-4xl.md:text-5xl.font-bold.text-orange-500
       | 🚀 Live Demo: RabbitMQ vs Sidekiq
 
+    - if flash[:success]
+      .alert.alert-success.mb-6.shadow-lg
+        = flash[:success]
+    - if flash[:error]
+      .alert.alert-error.mb-6.shadow-lg
+        = flash[:error]
+
     .grid.grid-cols-1.lg:grid-cols-2.gap-8
       / Sidekiq Demo
       .bg-base-200.border-2.border-green-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
@@ -30,23 +37,33 @@ section.py-16.bg-base-100
             .text-3xl.font-bold.text-orange-500#sidekiq-latency 0ms
             .text-sm.text-base-content.opacity-70 Latency
 
-        = form_with url: create_order_demo_index_path, method: :post, local: true, class: "space-y-6" do |f|
-          .mb-6
-            h3.text-xl.font-bold.mb-4 📧 Send Email Job
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Email Address
-              = f.text_field :email, value: "demo@example.com", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "user@example.com"
-            = f.submit "📧 Send Email Job", class: "btn btn-success w-full"
+        = form_with url: send_email_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
+          h3.text-xl.font-bold.mb-4 📧 Send Email Job
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Email Address
+            = f.text_field :email, value: "demo@example.com", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "user@example.com"
+          = f.submit "📧 Send Email Job", class: "btn btn-success w-full"
 
-          .mb-6
-            h3.text-xl.font-bold.mb-4 🖼️ Process Image
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Image URL
-              = f.text_field :image_url, value: "https://example.com/image.jpg", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "https://..."
-            = f.submit "🖼️ Process Image", class: "btn btn-success w-full"
+        = form_with url: process_image_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
+          h3.text-xl.font-bold.mb-4 🖼️ Process Image
+          .mb-4
+            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Image URL
+            = f.text_field :image_url, value: "https://example.com/image.jpg", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "https://..."
+          = f.submit "🖼️ Process Image", class: "btn btn-success w-full"
 
         .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
-          pre#sidekiq-response.text-sm.font-mono.text-green-500 Waiting for action...
+          pre#sidekiq-response.text-sm.font-mono.text-base-content
+            | 📋 Sidekiq Activity Log
+            |
+            | Ready to process background jobs!
+            |
+            | 💡 Tips:
+            | • Click "📧 Send Email Job" to queue an email worker
+            | • Click "🖼️ Process Image" to queue an image processor
+            | • Check /sidekiq for detailed job status
+            | • Jobs will appear here once queued
+            |
+            | Last activity: None yet
 
       / RabbitMQ Demo
       .bg-base-200.border-2.border-orange-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
@@ -121,23 +138,151 @@ section.py-16.bg-base-100
             = f.submit "🔖 Headers Exchange", class: "btn btn-primary w-full"
 
         .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
-          pre#rabbitmq-response.text-sm.font-mono.text-green-500 Waiting for action...
+          pre#rabbitmq-response.text-sm.font-mono.text-base-content
+            | 📋 RabbitMQ Activity Log
+            |
+            | Ready to publish messages!
+            |
+            | 💡 Tips:
+            | • "📦 Create Order" → Topic + Fanout Exchange
+            | • "💰 Paid Order" → Topic Exchange routing
+            | • "🚚 Shipped Order" → Topic Exchange routing
+            | • "🎯 Direct Exchange" → Priority-based routing
+            | • "🔖 Headers Exchange" → Header-based routing
+            |
+            | Check console logs for message routing details
+            | Last activity: None yet
 
 javascript:
-  // Load stats on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  // Format large numbers
+  function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+  }
+
+  // Format latency
+  function formatLatency(ms) {
+    if (ms >= 1000) return (ms / 1000).toFixed(1) + 's';
+    return ms + 'ms';
+  }
+
+  // Update stats display
+  function updateStats() {
     fetch('/demo/stats')
       .then(response => response.json())
       .then(data => {
+        // Update Sidekiq stats
         if (data.sidekiq) {
-          document.getElementById('sidekiq-processed').textContent = data.sidekiq.processed || 0;
-          document.getElementById('sidekiq-failed').textContent = data.sidekiq.failed || 0;
-          document.getElementById('sidekiq-latency').textContent = (data.sidekiq.latency || 0) + 'ms';
+          const sidekiq = data.sidekiq;
+          document.getElementById('sidekiq-processed').textContent = formatNumber(sidekiq.processed || 0);
+          document.getElementById('sidekiq-workers').textContent = sidekiq.workers || 0;
+          document.getElementById('sidekiq-failed').textContent = formatNumber(sidekiq.failed || 0);
+          document.getElementById('sidekiq-latency').textContent = formatLatency(sidekiq.latency || 0);
         }
+
+        // Update RabbitMQ stats
         if (data.rabbitmq) {
-          document.getElementById('rabbitmq-messages').textContent = data.rabbitmq.messages || 0;
-          document.getElementById('rabbitmq-connections').textContent = data.rabbitmq.connections || 0;
+          const rabbitmq = data.rabbitmq;
+          document.getElementById('rabbitmq-messages').textContent = formatNumber(rabbitmq.messages || 0);
+          document.getElementById('rabbitmq-connections').textContent = rabbitmq.connections || 0;
+          document.getElementById('rabbitmq-queues').textContent = rabbitmq.queues || 5;
+          document.getElementById('rabbitmq-latency').textContent = formatLatency(rabbitmq.latency || 0);
+
+          // Update connection status color
+          const connectionEl = document.getElementById('rabbitmq-connections');
+          if (rabbitmq.connected) {
+            connectionEl.classList.remove('text-red-500');
+            connectionEl.classList.add('text-green-500');
+          } else {
+            connectionEl.classList.remove('text-green-500');
+            connectionEl.classList.add('text-red-500');
+          }
         }
       })
-      .catch(err => console.error('Error loading stats:', err));
+      .catch(err => {
+        console.error('Error loading stats:', err);
+        // Show error state
+        document.getElementById('sidekiq-processed').textContent = '?';
+        document.getElementById('rabbitmq-messages').textContent = '?';
+      });
+  }
+
+  // Update response boxes when forms are submitted
+  function updateSidekiqResponse(message, type = 'info') {
+    const responseBox = document.getElementById('sidekiq-response');
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? 'text-green-500' : type === 'error' ? 'text-red-500' : 'text-blue-500';
+
+    const currentContent = responseBox.textContent;
+    const newEntry = `[${timestamp}] ${message}`;
+
+    // Keep last 10 entries
+    const lines = currentContent.split('\n').filter(line => line.trim());
+    const activityLines = lines.filter(line => line.includes('[') && line.includes(']'));
+    activityLines.push(newEntry);
+    const recentActivity = activityLines.slice(-10).join('\n');
+
+    responseBox.innerHTML = `<span class="text-base-content">📋 Sidekiq Activity Log</span>\n\n<span class="${color}">${recentActivity}</span>\n\n<span class="text-base-content opacity-70">💡 Check /sidekiq for detailed job status</span>`;
+  }
+
+  function updateRabbitmqResponse(message, type = 'info') {
+    const responseBox = document.getElementById('rabbitmq-response');
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? 'text-green-500' : type === 'error' ? 'text-red-500' : 'text-blue-500';
+
+    const currentContent = responseBox.textContent;
+    const newEntry = `[${timestamp}] ${message}`;
+
+    // Keep last 10 entries
+    const lines = currentContent.split('\n').filter(line => line.trim());
+    const activityLines = lines.filter(line => line.includes('[') && line.includes(']'));
+    activityLines.push(newEntry);
+    const recentActivity = activityLines.slice(-10).join('\n');
+
+    responseBox.innerHTML = `<span class="text-base-content">📋 RabbitMQ Activity Log</span>\n\n<span class="${color}">${recentActivity}</span>\n\n<span class="text-base-content opacity-70">💡 Check console logs for routing details</span>`;
+  }
+
+  // Listen for flash messages and update response boxes
+  document.addEventListener('DOMContentLoaded', function() {
+    updateStats();
+    setInterval(updateStats, 3000); // Refresh every 3 seconds
+
+    // Check for flash messages and update response boxes
+    const successFlash = document.querySelector('.alert-success');
+    const errorFlash = document.querySelector('.alert-error');
+
+    if (successFlash) {
+      const message = successFlash.textContent.trim();
+      if (message.includes('Email') || message.includes('Image')) {
+        updateSidekiqResponse(message, 'success');
+      } else if (message.includes('Order') || message.includes('Exchange') || message.includes('Published')) {
+        updateRabbitmqResponse(message, 'success');
+      }
+    }
+
+    if (errorFlash) {
+      const message = errorFlash.textContent.trim();
+      if (message.includes('Sidekiq') || message.includes('Email') || message.includes('Image')) {
+        updateSidekiqResponse(message, 'error');
+      } else {
+        updateRabbitmqResponse(message, 'error');
+      }
+    }
+
+    // Listen for form submissions
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        const formAction = form.action;
+        const submitButton = form.querySelector('input[type="submit"]');
+        const buttonText = submitButton ? submitButton.value : '';
+
+        // Show loading state
+        if (formAction.includes('send_email') || formAction.includes('process_image')) {
+          updateSidekiqResponse(`⏳ Queuing job: ${buttonText}...`, 'info');
+        } else if (formAction.includes('demo')) {
+          updateRabbitmqResponse(`⏳ Publishing message: ${buttonText}...`, 'info');
+        }
+      });
+    });
   });
