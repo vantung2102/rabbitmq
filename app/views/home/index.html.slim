@@ -1,4 +1,4 @@
-- provide(:title, "RabbitMQ Deep Dive")
+- provide(:title, "RabbitMQ")
 
 / Hero Section - SLIDE 1
 section.hero.bg-gradient-to-br.from-orange-600.via-purple-600.to-teal-600.py-24.text-center.relative.overflow-hidden
@@ -7,13 +7,12 @@ section.hero.bg-gradient-to-br.from-orange-600.via-purple-600.to-teal-600.py-24.
     .mb-6
       .text-8xl.mb-4 🐰
     h1.text-6xl.md:text-7xl.font-black.mb-6.text-white.drop-shadow-lg.leading-tight
-      | RabbitMQ Deep Dive
+      | RabbitMQ
     p.text-3xl.md:text-4xl.text-white.font-light.mb-4.opacity-95
-      | Message Broker for Distributed Systems
+      | Message Queue Systems
     .bg-white.bg-opacity-20.backdrop-blur-sm.rounded-2xl.p-6.mt-8.max-w-3xl.mx-auto
       p.text-xl.text-white.mb-2.font-semibold 👨‍💻 Speaker: Zane
       p.text-lg.text-white.opacity-90.mb-2 📅 RabbitMQ Architecture, Patterns & Implementation in Rails
-      p.text-base.text-white.opacity-80 🎯 Focus: RabbitMQ (with Sidekiq comparison)
 
 / Agenda Section - SLIDE 2
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
@@ -21,7 +20,7 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
       | 📋 Agenda
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
-      - agenda_items = [{ number: "1️⃣", title: "Problem & Solution", desc: "Synchronous vs Asynchronous Processing" }, { number: "2️⃣", title: "Message Queue Fundamentals", desc: "Message Queue & Message Broker" }, { number: "3️⃣", title: "RabbitMQ Deep Dive ⭐", desc: "Architecture, Exchange Types, Reliability" }, { number: "4️⃣", title: "Sidekiq Overview", desc: "Quick comparison with RabbitMQ" }, { number: "5️⃣", title: "Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" }, { number: "6️⃣", title: "Comparison & Decision", desc: "When to use what" }, { number: "7️⃣", title: "Q&A", desc: "Common questions & answers" }]
+      - agenda_items = [{ number: "1️⃣", title: "Problem & Solution", desc: "Synchronous vs Asynchronous Processing" }, { number: "2️⃣", title: "Message Queue Fundamentals", desc: "Message Queue & Message Broker" }, { number: "3️⃣", title: "RabbitMQ ⭐", desc: "Architecture, Exchange Types, Reliability" }, { number: "4️⃣", title: "Sidekiq Overview", desc: "Quick comparison with RabbitMQ" }, { number: "5️⃣", title: "Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" }, { number: "6️⃣", title: "Comparison & Decision", desc: "When to use what" }, { number: "7️⃣", title: "Q&A", desc: "Common questions & answers" }]
       - agenda_items.each do |item|
         .bg-white.p-6.rounded-2xl.shadow-xl.border-l-4.border-orange-500.transition-all.duration-300.hover:-translate-y-2.hover:shadow-2xl.hover:border-orange-600
           .text-4xl.mb-3 = item[:number]
@@ -670,29 +669,12 @@ section.py-20.bg-base-100
             strong Why:
             = " #{stage[:why]}"
 
-/ Q&A Section - SLIDE 17
-section.py-20.bg-gradient-to-b.from-base-200.to-base-100
-  .container.mx-auto.px-4
-    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
-      | ❓ Q&A
 
-    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
-      - qa_items = [{ q: "When to use RabbitMQ vs Sidekiq?", a: "See decision framework. RabbitMQ for microservices, complex routing. Sidekiq for Rails monolith." }, { q: "Can RabbitMQ replace Sidekiq?", a: "Yes, but may be overkill for simple Rails apps. Hybrid approach is often best." }, { q: "Performance comparison?", a: "Sidekiq: ~100K+ jobs/s, In-memory. RabbitMQ: ~20K msg/s, Disk-based." }, { q: "How does cost differ?", a: "RabbitMQ: $50-400/month. Sidekiq: $15-200/month. RabbitMQ requires more infrastructure." }, { q: "How to migrate from Sidekiq?", a: "Gradual: Keep Sidekiq for internal jobs, add RabbitMQ for inter-service. Use Sneakers gem." }, { q: "Is RabbitMQ difficult to maintain?", a: "Medium complexity. Requires DevOps knowledge but management UI helps." }]
-      - qa_items.each do |item|
-        .bg-white.p-8.rounded-2xl.border-l-4.border-teal-500.shadow-xl.hover:shadow-2xl.hover:-translate-y-1.transition-all
-          .font-black.text-xl.mb-4.text-gray-800 = item[:q]
-          .text-base.text-gray-700.leading-relaxed = item[:a]
-
-/ Thank You Section - SLIDE 18
 section.py-24.bg-gradient-to-br.from-purple-700.via-purple-600.to-teal-600.relative.overflow-hidden
   .absolute.inset-0.bg-black.opacity-20
   .container.mx-auto.px-4.text-center.relative.z-10
     .text-9xl.mb-6.animate-bounce 🙏
     h2.text-6xl.md:text-7xl.font-black.mb-6.text-white.drop-shadow-2xl Thank You!
-    .bg-white.bg-opacity-20.backdrop-blur-md.rounded-2xl.p-8.max-w-2xl.mx-auto.mb-8.shadow-2xl
-      p.text-2xl.text-white.font-semibold.mb-3 📧 Email: zane@example.com
-      p.text-2xl.text-white.font-semibold.mb-3 💼 LinkedIn: /in/zane
-      p.text-2xl.text-white.font-semibold.mb-0 🐙 GitHub: github.com/zane/rabbitmq-demo
 
     .bg-white.bg-opacity-20.backdrop-blur-md.p-8.rounded-2xl.max-w-2xl.mx-auto.shadow-2xl.border-2.border-white.border-opacity-30
       h3.text-white.mb-6.text-3xl.font-black 🔗 Useful Resources

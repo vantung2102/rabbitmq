@@ -241,13 +241,429 @@ RabbitMQConfig.connection&.open?
   - **Queues**: Các queues và số messages
   - **Message Rates**: Tốc độ publish/consume
 
-### 4. Xem Console Logs
-Tất cả actions sẽ log ra console với format:
+---
+
+## 🔍 Hướng Dẫn Chi Tiết: Kiểm Tra RabbitMQ
+
+### 1. RabbitMQ Management UI (Web Interface)
+
+#### Truy Cập:
 ```
-📤 Published to Topic Exchange: order.created.vn
-📦 [INVENTORY] Processing order #12345
-💰 [ACCOUNTING] Processing payment for order #12345
-📧 [EMAIL] Sending email to customer@example.com
+URL: http://localhost:15672
+Username: guest
+Password: guest
+```
+
+#### Các Tab Quan Trọng:
+
+**A. Overview Tab (Trang chủ)**
+- Xem tổng quan: Connections, Channels, Exchanges, Queues
+- Message rates: Publish rate, Delivery rate
+- Node info: Memory, Disk usage
+
+**B. Connections Tab**
+- Xem tất cả connections đang active
+- Kiểm tra connection từ Rails app
+- Xem connection details: Channels, State, Protocol
+
+**C. Channels Tab**
+- Xem tất cả channels
+- Mỗi connection có thể có nhiều channels
+- Xem channel details: Prefetch, Unacked messages
+
+**D. Exchanges Tab** ⭐ (Quan trọng nhất cho demo)
+- Xem tất cả exchanges:
+  - `demo.direct` - Direct Exchange
+  - `demo.fanout` - Fanout Exchange
+  - `demo.topic` - Topic Exchange (MOST USED)
+  - `demo.headers` - Headers Exchange
+  - `demo.dlx` - Dead Letter Exchange
+- Click vào exchange để xem:
+  - **Bindings**: Queues nào đang bind với exchange này
+  - **Routing keys**: Pattern matching rules
+  - **Message rates**: Publish/consume rates
+
+**E. Queues Tab** ⭐ (Quan trọng cho demo)
+- Xem tất cả queues:
+  - `inventory.service` - Inventory consumer
+  - `accounting.service` - Accounting consumer
+  - `vietnam.warehouse` - Vietnam warehouse consumer
+  - `analytics.service` - Analytics consumer
+  - `logging.service` - Logging consumer
+- Click vào queue để xem:
+  - **Messages**: Số messages đang chờ (Ready, Unacked)
+  - **Bindings**: Exchange nào bind với queue này
+  - **Routing key**: Pattern matching
+  - **Consumers**: Số consumers đang listen
+  - **Message rates**: Publish/consume rates
+  - **Get messages**: Test consume messages (Preview)
+
+**F. Admin Tab**
+- User management
+- Virtual hosts
+- Policies
+
+#### Cách Kiểm Tra Sau Khi Publish Message:
+
+1. **Sau khi click "📦 Create Order":**
+   - Vào **Exchanges** tab → Click `demo.topic`
+   - Xem **Bindings**: Sẽ thấy các queues bind với routing keys:
+     - `inventory.service` ← `order.created.*`
+     - `vietnam.warehouse` ← `#.vn`
+     - `analytics.service` ← `order.*`
+   - Xem **Message rates**: Publish rate sẽ tăng
+   - Vào **Queues** tab → Click từng queue:
+     - `inventory.service`: Messages sẽ tăng lên
+     - `vietnam.warehouse`: Messages sẽ tăng lên (nếu country = vn)
+     - `analytics.service`: Messages sẽ tăng lên
+   - Vào **Exchanges** tab → Click `demo.fanout`
+   - Xem **Bindings**: Tất cả queues đều nhận message (broadcast)
+
+2. **Sau khi click "💰 Paid Order":**
+   - Vào **Exchanges** tab → Click `demo.topic`
+   - Xem routing key: `order.paid.vn` hoặc `order.paid.us`
+   - Vào **Queues** tab → Click `accounting.service`
+   - Xem messages: Sẽ tăng lên (vì binding `order.paid.#`)
+
+3. **Sau khi click "🎯 Direct Exchange":**
+   - Vào **Exchanges** tab → Click `demo.direct`
+   - Xem **Bindings**: Queues với exact match routing keys
+   - Routing keys: `priority.high`, `priority.medium`, `priority.low`
+
+4. **Sau khi click "🔖 Headers Exchange":**
+   - Vào **Exchanges** tab → Click `demo.headers`
+   - Xem **Bindings**: Queues với header matching rules
+   - Headers: `format`, `priority`, `size`
+
+#### Cách Xem Messages Trong Queue:
+
+1. Vào **Queues** tab
+2. Click vào queue name (ví dụ: `inventory.service`)
+3. Scroll xuống phần **Get messages**
+4. Click **Get Message(s)** để preview message
+5. Xem message content: JSON format với order data
+
+#### Cách Monitor Real-time:
+
+1. Vào **Queues** tab
+2. Click vào queue
+3. Xem **Message rates** chart (real-time)
+4. Xem **Ready** và **Unacked** messages
+5. Nếu messages giảm → Consumers đang xử lý
+6. Nếu messages tăng → Consumers không chạy hoặc chậm
+
+---
+
+### 2. RabbitMQ Command Line (rabbitmqctl)
+
+#### Kiểm Tra Status:
+```bash
+# Kiểm tra RabbitMQ đang chạy
+rabbitmqctl status
+
+# Output sẽ hiển thị:
+# - Node name
+# - Uptime
+# - Memory usage
+# - Disk usage
+# - Erlang version
+```
+
+#### Xem Tất Cả Queues:
+```bash
+# List tất cả queues
+rabbitmqctl list_queues name messages consumers
+
+# Output:
+# inventory.service    5    1
+# accounting.service   2    1
+# vietnam.warehouse    3    1
+# analytics.service    4    1
+# logging.service      6    1
+```
+
+#### Xem Tất Cả Exchanges:
+```bash
+# List tất cả exchanges
+rabbitmqctl list_exchanges name type
+
+# Output:
+# demo.direct    direct
+# demo.fanout    fanout
+# demo.topic     topic
+# demo.headers   headers
+# demo.dlx       fanout
+```
+
+#### Xem Bindings (Routing Rules):
+```bash
+# Xem bindings của exchange
+rabbitmqctl list_bindings
+
+# Hoặc xem bindings của specific exchange
+rabbitmqctl list_bindings source_name source_kind destination_name destination_kind routing_key
+
+# Ví dụ: Xem bindings của demo.topic
+rabbitmqctl list_bindings demo.topic exchange
+
+# Output:
+# demo.topic    exchange    inventory.service    queue    order.created.*
+# demo.topic    exchange    vietnam.warehouse    queue    #.vn
+# demo.topic    exchange    accounting.service   queue    order.paid.#
+```
+
+#### Xem Connections:
+```bash
+# List tất cả connections
+rabbitmqctl list_connections name state
+
+# Output:
+# <connection_name>    running
+```
+
+#### Xem Channels:
+```bash
+# List tất cả channels
+rabbitmqctl list_channels name connection number
+
+# Output:
+# <channel_name>    <connection_name>    1
+```
+
+#### Xem Consumers:
+```bash
+# List tất cả consumers
+rabbitmqctl list_consumers queue_name
+
+# Hoặc xem consumers của specific queue
+rabbitmqctl list_consumers inventory.service
+
+# Output:
+# queue_name            channel_details    consumer_tag    ack_required
+# inventory.service     <channel>          <tag>           true
+```
+
+#### Purge Queue (Xóa tất cả messages trong queue):
+```bash
+# Xóa messages trong queue (cẩn thận!)
+rabbitmqctl purge_queue inventory.service
+```
+
+#### Delete Queue:
+```bash
+# Xóa queue (cẩn thận!)
+rabbitmqctl delete_queue inventory.service
+```
+
+---
+
+### 3. Kiểm Tra Từ Rails Console
+
+#### Mở Rails Console:
+```bash
+rails console
+# hoặc
+rails c
+```
+
+#### Kiểm Tra Connection:
+```ruby
+# Kiểm tra RabbitMQ connection
+RabbitMQConfig.connection&.open?
+# => true (nếu connected) hoặc false/nil (nếu không connected)
+
+# Xem connection details
+RabbitMQConfig.connection
+# => #<Bunny::Session:...>
+
+# Xem channel
+RabbitMQConfig.channel
+# => #<Bunny::Channel:...>
+```
+
+#### Kiểm Tra Exchanges:
+```ruby
+# Kiểm tra exchanges
+RabbitMQConfig.topic_exchange
+# => #<Bunny::Exchange:...>
+
+RabbitMQConfig.fanout_exchange
+RabbitMQConfig.direct_exchange
+RabbitMQConfig.headers_exchange
+```
+
+#### Test Publish Message:
+```ruby
+# Test publish message
+order_data = {
+  order_id: 12345,
+  product: "MacBook Pro",
+  amount: 2999,
+  country: "vn",
+  timestamp: Time.now.iso8601
+}
+
+OrderPublisher.publish_order_created(order_data)
+# => Message được publish thành công
+```
+
+#### Kiểm Tra Queue Messages:
+```ruby
+# Lấy channel
+channel = RabbitMQConfig.channel
+
+# Declare queue (passive mode - chỉ kiểm tra, không tạo mới)
+queue = channel.queue('inventory.service', passive: true)
+
+# Xem số messages
+queue.message_count
+# => 5 (số messages đang chờ)
+
+# Xem consumers
+queue.consumer_count
+# => 1 (số consumers đang listen)
+```
+
+---
+
+### 4. Checklist Kiểm Tra RabbitMQ Trước Demo
+
+#### Trước Khi Demo:
+- [ ] RabbitMQ đang chạy: `rabbitmqctl status`
+- [ ] Management UI accessible: `http://localhost:15672`
+- [ ] Login thành công với `guest/guest`
+- [ ] Exchanges đã được tạo:
+  - [ ] `demo.direct`
+  - [ ] `demo.fanout`
+  - [ ] `demo.topic`
+  - [ ] `demo.headers`
+- [ ] Queues đã được tạo (sau khi start Sneakers):
+  - [ ] `inventory.service`
+  - [ ] `accounting.service`
+  - [ ] `vietnam.warehouse`
+  - [ ] `analytics.service`
+  - [ ] `logging.service`
+- [ ] Consumers đang listen (trong Queues tab, xem "Consumers" > 0)
+- [ ] Bindings đã đúng:
+  - [ ] `demo.topic` → `inventory.service` với `order.created.*`
+  - [ ] `demo.topic` → `vietnam.warehouse` với `#.vn`
+  - [ ] `demo.topic` → `accounting.service` với `order.paid.#`
+  - [ ] `demo.fanout` → tất cả queues (broadcast)
+
+#### Trong Khi Demo:
+- [ ] Sau khi publish message, messages tăng trong queues
+- [ ] Messages giảm khi consumers xử lý
+- [ ] Message rates hiển thị trong Management UI
+- [ ] Console logs hiển thị consumer processing
+
+#### Sau Khi Demo:
+- [ ] Kiểm tra messages đã được consume hết
+- [ ] Không có messages bị stuck trong queues
+- [ ] Consumers vẫn đang listen
+
+---
+
+### 5. Debug RabbitMQ Issues
+
+#### Vấn Đề: Messages Không Được Route
+
+**Kiểm tra:**
+1. Exchange đã được tạo chưa?
+   ```bash
+   rabbitmqctl list_exchanges | grep demo
+   ```
+
+2. Queue đã được tạo chưa?
+   ```bash
+   rabbitmqctl list_queues | grep inventory
+   ```
+
+3. Binding đã đúng chưa?
+   ```bash
+   rabbitmqctl list_bindings | grep demo.topic
+   ```
+
+4. Routing key có match pattern không?
+   - `order.created.vn` → `order.created.*` ✅
+   - `order.created.vn` → `order.created.us` ❌
+
+#### Vấn Đề: Messages Không Được Consume
+
+**Kiểm tra:**
+1. Consumers đang chạy chưa?
+   ```bash
+   rabbitmqctl list_consumers inventory.service
+   ```
+
+2. Sneakers workers đang chạy chưa?
+   ```bash
+   ps aux | grep sneakers
+   ```
+
+3. Queue có messages không?
+   ```bash
+   rabbitmqctl list_queues name messages
+   ```
+
+4. Consumers có bị error không?
+   - Xem console logs của Sneakers workers
+
+#### Vấn Đề: Connection Failed
+
+**Kiểm tra:**
+1. RabbitMQ đang chạy?
+   ```bash
+   rabbitmqctl status
+   ```
+
+2. Port 5672 có bị block không?
+   ```bash
+   lsof -i :5672
+   ```
+
+3. Credentials đúng chưa?
+   - Check `.env` hoặc environment variables
+
+4. Firewall có block không?
+   ```bash
+   telnet localhost 5672
+   ```
+
+---
+
+### 6. Quick Reference Commands
+
+#### Trước Demo:
+```bash
+# 1. Check RabbitMQ status
+rabbitmqctl status
+
+# 2. List exchanges
+rabbitmqctl list_exchanges name type | grep demo
+
+# 3. List queues
+rabbitmqctl list_queues name messages consumers | grep -E "(inventory|accounting|vietnam|analytics|logging)"
+
+# 4. List bindings
+rabbitmqctl list_bindings | grep demo.topic
+```
+
+#### Trong Demo:
+```bash
+# Monitor queues real-time
+watch -n 1 'rabbitmqctl list_queues name messages consumers'
+
+# Xem message rates
+# (Sử dụng Management UI: http://localhost:15672)
+```
+
+#### Sau Demo:
+```bash
+# Check messages còn lại
+rabbitmqctl list_queues name messages
+
+# Purge queues nếu cần (cẩn thận!)
+rabbitmqctl purge_queue inventory.service
 ```
 
 ---

@@ -45,8 +45,8 @@ gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
 
 # RabbitMQ
-gem 'bunny', '~> 2.22' # RabbitMQ client
-gem 'sneakers', '~> 2.12' # RabbitMQ consumer framework
+gem 'bunny', '~> 2.22'
+gem 'sneakers', '~> 2.12'
 
 # Seed
 gem 'faker'

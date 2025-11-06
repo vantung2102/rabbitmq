@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
   root 'home#index'
-  # get 'demo', to: 'home#demo'
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
+  resources :sidekiq, only: [] do
+  end
+
+  resources :rabbitmq, only: [] do
+  end
 
   # Demo routes
   resources :demo, only: [:index] do
@@ -16,22 +24,5 @@ Rails.application.routes.draw do
       post :headers_exchange_demo
       get :stats
     end
-  end
-
-  # Sidekiq Web UI
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
-
-  devise_for :users,
-    controllers: {
-      sessions: 'authentication/sessions',
-      registrations: 'authentication/registrations',
-      omniauth_callbacks: 'authentication/omniauth_callbacks'
-    }
-
-  namespace :admin do
-    resources :users
-
-    root to: 'users#index'
   end
 end
