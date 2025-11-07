@@ -1,80 +1,80 @@
-section.bg-gradient-to-br.from-slate-50.via-gray-50.to-slate-100.py-8
+section.bg-gray-100.py-6
   .container.mx-auto.px-4.max-w-7xl
-    .text-center.mb-6
-      .inline-flex.items-center.gap-2.bg-gradient-to-r.from-red-500.via-red-600.to-red-700.text-white.px-5.py-2.rounded-xl.shadow-lg.mb-3
-        = lucide_icon(:alert_triangle, class: 'w-5 h-5')
-        span.font-black.text-sm.uppercase.tracking-wide THE PROBLEM
+    .text-center.mb-4
+      .inline-flex.items-center.gap-2.bg-red-600.text-white.px-4.py-1.5.rounded-xl.shadow-lg.mb-2
+        = lucide_icon(:alert_triangle, class: 'w-4 h-4')
+        span.font-black.text-xs.uppercase.tracking-wide THE PROBLEM
 
-      h2.text-2xl.md:text-3xl.font-black.text-gray-900.mb-2.leading-tight Synchronous Processing
+      h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight Synchronous Processing
 
-      .inline-flex.items-center.gap-2.bg-white.px-4.py-2.rounded-full.shadow-md.border-2.border-gray-200
-        = lucide_icon(:user_circle, class: 'w-4 h-4 text-blue-600')
-        span.text-sm.font-bold.text-gray-700 Scenario: User Registration
+      .inline-flex.items-center.gap-2.bg-white.px-3.py-1.5.rounded-full.shadow-md.border-2.border-gray-300
+        = lucide_icon(:user_circle, class: 'w-3 h-3 text-blue-600')
+        span.text-xs.font-bold.text-gray-700 Scenario: User Registration
 
-    .grid.grid-cols-1.lg:grid-cols-2.gap-5.items-start
-      .space-y-3
-        .bg-gradient-to-r.from-slate-700.via-slate-800.to-slate-900.rounded-xl.px-4.py-3.shadow-lg
+    .grid.grid-cols-1.lg:grid-cols-2.gap-4.items-start
+      .space-y-2
+        .bg-slate-700.rounded-xl.px-3.py-2.shadow-lg
           .flex.items-center.gap-2
-            .bg-white.p-1.5.rounded-lg
-              = lucide_icon(:activity, class: 'w-4 h-4 text-slate-800')
+            .bg-white.p-1.rounded-lg
+              = lucide_icon(:activity, class: 'w-3 h-3 text-slate-800')
             .text-white
-              .text-xs.font-semibold.uppercase.tracking-wider.opacity-80 Flow
-              .text-lg.font-black How It Works Now
+              .text-xs.font-bold.uppercase.tracking-wider Flow
+              .text-base.font-black How It Works Now
 
         .relative.pl-1
-          .absolute.left-6.top-0.bottom-12.w-0.5.bg-gradient-to-b.from-blue-400.via-yellow-400.to-red-500.opacity-30
+          .absolute.left-5.top-0.bottom-10.w-0.5.bg-gray-300
 
-          .space-y-2
+          .space-y-1.5
             - problem_flow_steps.each_with_index do |step, index|
               .relative.z-10
-                .flex.items-start.gap-3.group
-                  .flex-shrink-0.w-10.h-10.rounded-xl.bg-gradient-to-br.from-slate-600.to-slate-800.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
-                    = lucide_icon(step[:icon], class: 'w-5 h-5 text-white')
+                .flex.items-start.gap-2.group
+                  .flex-shrink-0.w-9.h-9.rounded-xl.bg-slate-600.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
+                    = lucide_icon(step[:icon], class: 'w-4 h-4 text-white')
 
-                  .flex-1.bg-white.rounded-xl.p-3.shadow-md.border-2.border-gray-200.group-hover:shadow-lg.transition-all
-                    .flex.items-center.justify-between.gap-3.flex-wrap
+                  .flex-1.bg-white.rounded-xl.p-2.shadow-md.border-2.border-gray-300.group-hover:shadow-lg.transition-all
+                    .flex.items-center.justify-between.gap-2.flex-wrap
                       div
-                        .text-xs.font-bold.text-gray-400.uppercase.mb-0.5 Step #{index + 1}
-                        .text-sm.font-bold.text-gray-900 = step[:text]
+                        .text-xs.font-bold.text-gray-500.uppercase.mb-0.5 Step #{index + 1}
+                        .text-xs.font-bold.text-gray-900 = step[:text]
 
                       - if step[:time]
-                        .flex.items-center.gap-1.bg-gradient-to-br.from-orange-100.to-red-100.px-2.py-1.rounded-lg.border-2.border-orange-400
-                          = lucide_icon(:timer, class: 'w-3 h-3 text-orange-600')
+                        .flex.items-center.gap-1.bg-orange-100.px-2.py-0.5.rounded-lg.border-2.border-orange-400
+                          = lucide_icon(:timer, class: 'w-2.5 h-2.5 text-orange-600')
                           span.font-black.text-orange-700.text-xs = step[:time]
 
                 - unless index == problem_flow_steps.length - 1
-                  .flex.justify-center.my-1.ml-5
-                    = lucide_icon(:arrow_down, class: 'w-5 h-5 text-red-400 animate-bounce')
+                  .flex.justify-center.my-0.5.ml-4
+                    = lucide_icon(:arrow_down, class: 'w-4 h-4 text-red-500 animate-bounce')
 
-        .bg-gradient-to-br.from-red-500.via-red-600.to-red-700.rounded-xl.p-4.shadow-xl.border-2.border-red-900
-          .flex.items-center.justify-between.gap-3.flex-wrap
-            .flex.items-center.gap-3
-              .bg-white.p-2.rounded-lg.shadow-lg
-                = lucide_icon(:alert_octagon, class: 'w-6 h-6 text-red-600')
+        .bg-red-600.rounded-xl.p-3.shadow-xl.border-2.border-red-800
+          .flex.items-center.justify-between.gap-2.flex-wrap
+            .flex.items-center.gap-2
+              .bg-white.p-1.5.rounded-lg.shadow-lg
+                = lucide_icon(:alert_octagon, class: 'w-5 h-5 text-red-600')
               div
-                .text-white.text-xs.font-bold.uppercase.opacity-90 Total Time
-                .text-white.text-2xl.font-black 6-10s
+                .text-white.text-xs.font-bold.uppercase Total Time
+                .text-white.text-xl.font-black 6-10s
 
-            .bg-white.bg-opacity-25.px-3.py-1.rounded-lg.border-2.border-white
-              .text-white.font-black.text-sm ⚠️ Poor UX
+            .bg-white.bg-opacity-25.px-2.py-0.5.rounded-lg.border-2.border-white
+              .text-white.font-black.text-xs ⚠️ Poor UX
 
-      .space-y-3
-        .bg-gradient-to-r.from-red-500.via-red-600.to-red-700.rounded-xl.px-4.py-3.shadow-lg
+      .space-y-2
+        .bg-red-600.rounded-xl.px-3.py-2.shadow-lg
           .flex.items-center.gap-2
-            .bg-white.p-1.5.rounded-lg
-              = lucide_icon(:triangle_alert, class: 'w-4 h-4 text-red-600')
+            .bg-white.p-1.rounded-lg
+              = lucide_icon(:triangle_alert, class: 'w-3 h-3 text-red-600')
             .text-white
-              .text-xs.font-semibold.uppercase.tracking-wider.opacity-80 Impact
-              .text-lg.font-black What Goes Wrong?
+              .text-xs.font-bold.uppercase.tracking-wider Impact
+              .text-base.font-black What Goes Wrong?
 
-        .bg-white.rounded-xl.p-4.shadow-lg.border-2.border-red-200
-          .space-y-2
+        .bg-white.rounded-xl.p-3.shadow-lg.border-2.border-red-300
+          .space-y-1.5
             - problem_consequences.each_with_index do |consequence, index|
-              .flex.items-start.gap-3.p-3.rounded-lg.bg-gradient-to-r.from-red-50.to-orange-50.border-2.border-red-200.hover:border-red-400.hover:shadow-md.transition-all.group
-                .flex-shrink-0.w-7.h-7.rounded-full.bg-gradient-to-br.from-red-500.to-red-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all
-                  span.text-white.font-black.text-sm #{index + 1}
+              .flex.items-start.gap-2.p-2.rounded-lg.bg-red-50.border-2.border-red-300.hover:border-red-500.hover:shadow-md.transition-all.group
+                .flex-shrink-0.w-6.h-6.rounded-full.bg-red-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all.border-2.border-white
+                  span.text-white.font-black.text-xs.drop-shadow-md = index + 1
 
                 .flex-1
                   .flex.items-start.gap-2
-                    = lucide_icon(:x_circle, class: 'w-4 h-4 text-red-600 flex-shrink-0 mt-0.5')
-                    p.text-gray-900.font-semibold.leading-snug.text-sm.m-0 = consequence
+                    = lucide_icon(:x_circle, class: 'w-3 h-3 text-red-600 flex-shrink-0 mt-0.5')
+                    p.text-gray-900.font-semibold.leading-snug.text-xs.m-0 = consequence

@@ -90,6 +90,47 @@ module HomeHelper
     { icon: ICONS[:consumer], name: "Consumer", desc: "(Worker)" }
   ].freeze
 
+  # Message queue features
+  MQ_FEATURES = [
+    { icon: :arrow_right, title: "FIFO", desc: "First In First Out", color: "blue" },
+    { icon: :zap, title: "Asynchronous", desc: "Producer doesn't wait", color: "purple" },
+    { icon: :unlink, title: "Decoupling", desc: "Independent components", color: "teal" },
+    { icon: :trending_up, title: "Scalable", desc: "Add multiple consumers", color: "cyan" }
+  ].freeze
+
+  # Popular message brokers
+  POPULAR_BROKERS = [
+    { icon: '🐇', name: 'RabbitMQ', desc: 'AMQP, feature-rich (Today\'s focus)', color: 'purple' },
+    { icon: '💾', name: 'Redis', desc: 'In-memory, simple, fast', color: 'red' },
+    { icon: '☕', name: 'Kafka', desc: 'High throughput, streaming', color: 'blue' }
+  ].freeze
+
+  # RabbitMQ overview - What is RabbitMQ
+  RABBITMQ_WHAT = [
+    "Open-source Message Broker, follows AMQP protocol",
+    "Written in Erlang → Highly concurrent, fault-tolerant",
+    "Enterprise-grade: Reliability, scalability, flexibility",
+    "Mature ecosystem (15+ years)"
+  ].freeze
+
+  # RabbitMQ overview - Why Choose RabbitMQ
+  RABBITMQ_WHY = [
+    "Guaranteed message delivery",
+    "Flexible routing (4 exchange types)",
+    "Clustering & High Availability",
+    "Management UI + Monitoring",
+    "Multi-language support"
+  ].freeze
+
+  # RabbitMQ key differentiators
+  RABBITMQ_DIFFERENTIATORS = [
+    "Complex routing patterns",
+    "Publisher confirms",
+    "Dead letter exchanges",
+    "Message TTL",
+    "Priority queues"
+  ].freeze
+
   # Message flow steps
   MESSAGE_FLOW_STEPS = [
     "Producer creates message",
@@ -101,6 +142,13 @@ module HomeHelper
     "Consumer processes message",
     "Consumer sends ACK back to RabbitMQ",
     "RabbitMQ removes message from Queue"
+  ].freeze
+
+  # Message flow key points
+  MESSAGE_FLOW_KEY_POINTS = [
+    { title: "At-least-once delivery", desc: "Message not deleted until consumer ACKs" },
+    { title: "Message Persistence", desc: "Queue must be durable, message must be persistent" },
+    { title: "Prefetch", desc: "Limit number of messages consumer receives at once" }
   ].freeze
 
   # Architecture components
@@ -124,12 +172,146 @@ module HomeHelper
     { component: "Routing Key", role: "Key for routing message", importance: "Pattern matching" }
   ].freeze
 
+  # Exchange reasons
+  EXCHANGE_REASONS = [
+    "Decoupling: Producer doesn't know which queue processes",
+    "Flexibility: Change routing without modifying code",
+    "Broadcast: 1 message → multiple queues",
+    "Filtering: Conditional routing"
+  ].freeze
+
   # Exchange types comparison
   EXCHANGE_COMPARISON = [
     { type: "Direct", perf: "⭐⭐⭐⭐⭐", comp: "⭐", flex: "⭐", use: "Simple routing" },
     { type: "Fanout", perf: "⭐⭐⭐⭐⭐", comp: "⭐", flex: "⭐⭐", use: "Broadcasting" },
     { type: "Topic", perf: "⭐⭐⭐", comp: "⭐⭐⭐", flex: "⭐⭐⭐⭐⭐", use: "Event-driven (Most popular)" },
     { type: "Headers", perf: "⭐⭐", comp: "⭐⭐⭐⭐⭐", flex: "⭐⭐⭐⭐", use: "Complex rules (Rarely used)" }
+  ].freeze
+
+  # Exchange types details
+  EXCHANGE_TYPES = [
+    {
+      number: 1,
+      name: "Direct Exchange",
+      color: "blue",
+      mechanism: "Exact match routing key",
+      flow_steps: [
+        'Message: "order.payment"',
+        "Exchange checks bindings",
+        "Queue receives message"
+      ],
+      advantages: [
+        "Simple, high performance",
+        "Suitable for simple routing"
+      ],
+      disadvantages: [
+        "Not flexible",
+        "Hard to maintain when scaling"
+      ],
+      when_to_use: [
+        "Priority queues",
+        "Task distribution",
+        "Simple 1-to-1 routing"
+      ],
+      example_title: "Logs",
+      examples: [
+        '"error" → error_queue',
+        '"warning" → warning_queue'
+      ]
+    },
+    {
+      number: 2,
+      name: "Fanout Exchange",
+      color: "green",
+      mechanism: "Broadcast to ALL queues",
+      flow_steps: [
+        "Message arrives",
+        "Broadcast to ALL",
+        "Ignore routing key"
+      ],
+      advantages: [
+        "Efficient broadcasting",
+        "Perfect pub/sub"
+      ],
+      disadvantages: [
+        "No filtering",
+        "Can be wasteful"
+      ],
+      when_to_use: [
+        "Logging system",
+        "Cache invalidation",
+        "Event broadcasting"
+      ],
+      example_title: "User registered",
+      examples: [
+        "→ Email, Analytics, CRM"
+      ]
+    },
+    {
+      number: 3,
+      name: "Topic Exchange",
+      color: "orange",
+      mechanism: "Pattern matching (*, #)",
+      is_most_powerful: true,
+      wildcards: [
+        "* = 1 word",
+        "# = 0+ words"
+      ],
+      example_pattern: '"order.created.vn"',
+      example_binding: 'Bindings: "order.*"',
+      advantages: [
+        "Extremely flexible",
+        "Powerful patterns"
+      ],
+      disadvantages: [
+        "More complex",
+        "Slower performance"
+      ],
+      when_to_use: [
+        "Event-driven microservices",
+        "Multi-tenant systems",
+        "Geographical routing"
+      ],
+      example_title: "E-commerce",
+      examples: [
+        '"order.created.*" → inventory'
+      ]
+    },
+    {
+      number: 4,
+      name: "Headers Exchange",
+      color: "purple",
+      mechanism: "Match by headers",
+      flow_steps: [
+        '"Headers: {format: "pdf"}"',
+        "Match headers",
+        "Route to queue"
+      ],
+      advantages: [
+        "Complex routing logic",
+        "Multiple criteria"
+      ],
+      disadvantages: [
+        "Lowest performance",
+        "Rarely used"
+      ],
+      when_to_use: [
+        "Content-based routing",
+        "Complex business rules"
+      ],
+      example_title: "File processing",
+      examples: [
+        '"{format: "pdf"} → "pdf_service"'
+      ]
+    }
+  ].freeze
+
+  # Exchange recommendation percentages
+  EXCHANGE_RECOMMENDATIONS = [
+    { percentage: "70%", type: "Topic" },
+    { percentage: "20%", type: "Fanout" },
+    { percentage: "10%", type: "Direct" },
+    { percentage: "<1%", type: "Headers" }
   ].freeze
 
   # Reliability features
@@ -279,6 +461,30 @@ module HomeHelper
     MESSAGE_FLOW_STEPS
   end
 
+  def message_flow_key_points
+    MESSAGE_FLOW_KEY_POINTS
+  end
+
+  def mq_features
+    MQ_FEATURES
+  end
+
+  def popular_brokers
+    POPULAR_BROKERS
+  end
+
+  def rabbitmq_what
+    RABBITMQ_WHAT
+  end
+
+  def rabbitmq_why
+    RABBITMQ_WHY
+  end
+
+  def rabbitmq_differentiators
+    RABBITMQ_DIFFERENTIATORS
+  end
+
   def arch_components
     ARCH_COMPONENTS
   end
@@ -287,8 +493,29 @@ module HomeHelper
     ARCH_DETAILS
   end
 
+  def exchange_reasons
+    EXCHANGE_REASONS
+  end
+
   def exchange_comparison
     EXCHANGE_COMPARISON
+  end
+
+  def exchange_types
+    EXCHANGE_TYPES
+  end
+
+  def exchange_recommendations
+    EXCHANGE_RECOMMENDATIONS
+  end
+
+  def exchange_color_classes(color)
+    {
+      "blue" => { bg: "from-blue-500.to-blue-600", text: "text-blue-600", border: "border-blue-500", bg_light: "bg-blue-50", border_light: "border-blue-200", text_dark: "text-blue-700" },
+      "green" => { bg: "from-green-500.to-green-600", text: "text-green-600", border: "border-green-500", bg_light: "bg-green-50", border_light: "border-green-200", text_dark: "text-green-700" },
+      "orange" => { bg: "from-orange-500.to-orange-600", text: "text-orange-600", border: "border-orange-500", bg_light: "bg-orange-50", border_light: "border-orange-200", text_dark: "text-orange-700" },
+      "purple" => { bg: "from-purple-500.to-purple-600", text: "text-purple-600", border: "border-purple-500", bg_light: "bg-purple-50", border_light: "border-purple-200", text_dark: "text-purple-700" }
+    }[color.to_s] || {}
   end
 
   def reliability_features
