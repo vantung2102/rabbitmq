@@ -1,7 +1,4 @@
-# app/controllers/rabbitmq_controller.rb
 class RabbitmqController < ApplicationController
-  layout 'application'
-
   def create_order
     order_data = {
       order_id: rand(10000..99999),

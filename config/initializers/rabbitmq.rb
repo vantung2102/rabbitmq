@@ -1,4 +1,3 @@
-# config/initializers/rabbitmq.rb
 require 'bunny'
 
 module RabbitMQConfig
@@ -66,11 +65,10 @@ module RabbitMQConfig
   end
 end
 
-# Initialize on Rails startup (for both server and console)
 Rails.application.config.after_initialize do
   begin
     RabbitMQConfig.setup
   rescue => e
-    Rails.logger.error "⚠️  RabbitMQ setup failed (will retry on first use): #{e.message}"
+    Rails.logger.error "RabbitMQ setup failed: #{e.message}"
   end
 end
