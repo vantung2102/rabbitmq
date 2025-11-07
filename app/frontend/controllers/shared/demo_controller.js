@@ -1,166 +1,150 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['sidekiqResponse', 'rabbitmqResponse'];
+  static targets = ['sidekiqResponse', 'rabbitmqResponse', 'sidekiqProcessed', 'sidekiqWorkers', 'sidekiqFailed', 'sidekiqLatency', 'rabbitmqMessages', 'rabbitmqConnections', 'rabbitmqQueues', 'rabbitmqLatency'];
 
-  // Sidekiq Demo Functions
-  sendSidekiqEmail(event) {
-    event.preventDefault();
-    const email = document.getElementById('sidekiq-email').value;
-    const responseBox = this.sidekiqResponseTarget;
-
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Sending email job to Sidekiq...</span>';
-
-    setTimeout(() => {
-      const response = {
-        success: true,
-        job_id: 'jid-' + Math.random().toString(36).substr(2, 9),
-        message: 'Email job queued successfully',
-        queue: 'default',
-        email: email,
-        estimated_time: '~3-5 seconds',
-        worker: 'EmailWorker',
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+  connect() {
+    this.updateStats();
+    this.statsInterval = setInterval(() => this.updateStats(), 3000);
+    this.handleFlashMessages();
+    this.setupFormListeners();
   }
 
-  processSidekiqImage(event) {
-    event.preventDefault();
-    const imageUrl = document.getElementById('sidekiq-image').value;
-    const responseBox = this.sidekiqResponseTarget;
-
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Queueing image processing job...</span>';
-
-    setTimeout(() => {
-      const response = {
-        success: true,
-        job_id: 'jid-' + Math.random().toString(36).substr(2, 9),
-        message: 'Image processing job queued',
-        queue: 'default',
-        image_url: imageUrl,
-        estimated_time: '~10-15 seconds',
-        worker: 'ImageProcessorWorker',
-        operations: ['resize', 'compress', 'watermark'],
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+  disconnect() {
+    if (this.statsInterval) {
+      clearInterval(this.statsInterval);
+    }
   }
 
-  generateSidekiqReport(event) {
-    event.preventDefault();
-    const reportType = document.getElementById('sidekiq-report').value;
-    const responseBox = this.sidekiqResponseTarget;
-
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Starting report generation...</span>';
-
-    setTimeout(() => {
-      const response = {
-        success: true,
-        job_id: 'jid-' + Math.random().toString(36).substr(2, 9),
-        message: 'Report generation started',
-        queue: 'default',
-        report_type: reportType,
-        estimated_time: '~20-30 seconds',
-        worker: 'ReportGeneratorWorker',
-        format: 'PDF',
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+  formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
   }
 
-  // RabbitMQ Demo Functions
-  createRabbitmqOrder(event) {
-    event.preventDefault();
-    const customer = document.getElementById('rabbitmq-customer').value;
-    const amount = document.getElementById('rabbitmq-amount').value;
-    const priority = document.getElementById('rabbitmq-priority').value;
-    const responseBox = this.rabbitmqResponseTarget;
-
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Publishing order to RabbitMQ Direct Exchange...</span>';
-
-    setTimeout(() => {
-      const response = {
-        success: true,
-        order_id: 'order-' + Math.random().toString(36).substr(2, 9),
-        customer: customer,
-        amount: '$' + amount,
-        message: 'Order published to RabbitMQ',
-        exchange: 'orders.direct',
-        exchange_type: 'Direct',
-        routing_key: 'order.' + priority,
-        queues: ['order_processing', 'inventory_update', 'analytics'],
-        note: 'Routed based on priority: ' + priority,
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+  formatLatency(ms) {
+    if (ms >= 1000) return (ms / 1000).toFixed(1) + 's';
+    return ms + 'ms';
   }
 
-  broadcastRabbitmqNotification(event) {
-    event.preventDefault();
-    const message = document.getElementById('rabbitmq-notification').value;
-    const type = document.getElementById('rabbitmq-type').value;
-    const responseBox = this.rabbitmqResponseTarget;
+  async updateStats() {
+    try {
+      const response = await fetch('/demo/stats');
+      const data = await response.json();
 
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Broadcasting to all queues via Fanout Exchange...</span>';
+      if (data.sidekiq) {
+        const sidekiq = data.sidekiq;
+        const processedEl = document.getElementById('sidekiq-processed');
+        const workersEl = document.getElementById('sidekiq-workers');
+        const failedEl = document.getElementById('sidekiq-failed');
+        const latencyEl = document.getElementById('sidekiq-latency');
 
-    setTimeout(() => {
-      const response = {
-        success: true,
-        notification_id: 'notif-' + Math.random().toString(36).substr(2, 9),
-        message: message,
-        type: type,
-        exchange: 'notifications.fanout',
-        exchange_type: 'Fanout',
-        routing_key: '(ignored for fanout)',
-        queues: ['web_notifications', 'mobile_push', 'email_notifications', 'sms_queue'],
-        note: 'All queues receive this message (broadcast)',
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+        if (processedEl) processedEl.textContent = this.formatNumber(sidekiq.processed || 0);
+        if (workersEl) workersEl.textContent = sidekiq.workers || 0;
+        if (failedEl) failedEl.textContent = this.formatNumber(sidekiq.failed || 0);
+        if (latencyEl) latencyEl.textContent = this.formatLatency(sidekiq.latency || 0);
+      }
+
+      if (data.rabbitmq) {
+        const rabbitmq = data.rabbitmq;
+        const messagesEl = document.getElementById('rabbitmq-messages');
+        const connectionsEl = document.getElementById('rabbitmq-connections');
+        const queuesEl = document.getElementById('rabbitmq-queues');
+        const latencyEl = document.getElementById('rabbitmq-latency');
+
+        if (messagesEl) messagesEl.textContent = this.formatNumber(rabbitmq.messages || 0);
+        if (connectionsEl) {
+          connectionsEl.textContent = rabbitmq.connections || 0;
+          if (rabbitmq.connected) {
+            connectionsEl.classList.remove('text-red-500');
+            connectionsEl.classList.add('text-green-500');
+          } else {
+            connectionsEl.classList.remove('text-green-500');
+            connectionsEl.classList.add('text-red-500');
+          }
+        }
+        if (queuesEl) queuesEl.textContent = rabbitmq.queues || 5;
+        if (latencyEl) latencyEl.textContent = this.formatLatency(rabbitmq.latency || 0);
+      }
+    } catch (err) {
+      console.error('Error loading stats:', err);
+      const processedEl = document.getElementById('sidekiq-processed');
+      const messagesEl = document.getElementById('rabbitmq-messages');
+      if (processedEl) processedEl.textContent = '?';
+      if (messagesEl) messagesEl.textContent = '?';
+    }
   }
 
-  publishRabbitmqEvent(event) {
-    event.preventDefault();
-    const eventType = document.getElementById('rabbitmq-event-type').value;
-    const action = document.getElementById('rabbitmq-action').value;
-    const region = document.getElementById('rabbitmq-region').value;
-    const responseBox = this.rabbitmqResponseTarget;
+  updateSidekiqResponse(message, type = 'info') {
+    if (!this.hasSidekiqResponseTarget) return;
 
-    responseBox.innerHTML = '<span class="text-yellow-500">⏳ Publishing event with Topic routing...</span>';
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? 'text-green-600' : type === 'error' ? 'text-red-600' : 'text-blue-600';
 
-    setTimeout(() => {
-      const routingKey = eventType + '.' + action + '.' + region;
-      const matchedQueues = [];
+    const currentContent = this.sidekiqResponseTarget.textContent;
+    const newEntry = `[${timestamp}] ${message}`;
 
-      if (eventType === 'order') matchedQueues.push('order_processing', 'analytics');
-      if (action === 'created') matchedQueues.push('audit_log');
-      if (region === 'vn') matchedQueues.push('vietnam_regional');
-      if (eventType === 'user') matchedQueues.push('user_service');
+    const lines = currentContent.split('\n').filter(line => line.trim());
+    const activityLines = lines.filter(line => line.includes('[') && line.includes(']'));
+    activityLines.push(newEntry);
+    const recentActivity = activityLines.slice(-10).join('\n');
 
-      const response = {
-        success: true,
-        event_id: 'evt-' + Math.random().toString(36).substr(2, 9),
-        event_type: eventType,
-        action: action,
-        region: region,
-        message: 'Event published with topic routing',
-        exchange: 'events.topic',
-        exchange_type: 'Topic',
-        routing_key: routingKey,
-        pattern_matching: {
-          wildcards: '* = 1 word, # = 0+ words',
-          examples: [eventType + '.#', '*.' + action + '.*', '#.' + region]
-        },
-        matched_queues: matchedQueues.length > 0 ? matchedQueues : ['analytics'],
-        timestamp: new Date().toISOString()
-      };
-      responseBox.innerHTML = '<pre class="text-green-500">' + JSON.stringify(response, null, 2) + '</pre>';
-    }, 500);
+    this.sidekiqResponseTarget.innerHTML = `<span class="text-gray-800 font-semibold">📋 Sidekiq Activity Log</span>\n\n<span class="${color}">${recentActivity}</span>\n\n<span class="text-gray-600 text-xs">💡 Check /sidekiq for detailed job status</span>`;
+  }
+
+  updateRabbitmqResponse(message, type = 'info') {
+    if (!this.hasRabbitmqResponseTarget) return;
+
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? 'text-green-600' : type === 'error' ? 'text-red-600' : 'text-blue-600';
+
+    const currentContent = this.rabbitmqResponseTarget.textContent;
+    const newEntry = `[${timestamp}] ${message}`;
+
+    const lines = currentContent.split('\n').filter(line => line.trim());
+    const activityLines = lines.filter(line => line.includes('[') && line.includes(']'));
+    activityLines.push(newEntry);
+    const recentActivity = activityLines.slice(-10).join('\n');
+
+    this.rabbitmqResponseTarget.innerHTML = `<span class="text-gray-800 font-semibold">📋 RabbitMQ Activity Log</span>\n\n<span class="${color}">${recentActivity}</span>\n\n<span class="text-gray-600 text-xs">💡 Check console logs for routing details</span>`;
+  }
+
+  handleFlashMessages() {
+    const successFlash = document.querySelector('.alert-success');
+    const errorFlash = document.querySelector('.alert-error');
+
+    if (successFlash) {
+      const message = successFlash.textContent.trim();
+      if (message.includes('Email') || message.includes('Image')) {
+        this.updateSidekiqResponse(message, 'success');
+      } else if (message.includes('Order') || message.includes('Exchange') || message.includes('Published')) {
+        this.updateRabbitmqResponse(message, 'success');
+      }
+    }
+
+    if (errorFlash) {
+      const message = errorFlash.textContent.trim();
+      if (message.includes('Sidekiq') || message.includes('Email') || message.includes('Image')) {
+        this.updateSidekiqResponse(message, 'error');
+      } else {
+        this.updateRabbitmqResponse(message, 'error');
+      }
+    }
+  }
+
+  setupFormListeners() {
+    this.element.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        const formAction = form.action;
+        const submitButton = form.querySelector('input[type="submit"]');
+        const buttonText = submitButton ? submitButton.value : '';
+
+        if (formAction.includes('/sidekiq/')) {
+          this.updateSidekiqResponse(`⏳ Queuing job: ${buttonText}...`, 'info');
+        } else if (formAction.includes('/rabbitmq/')) {
+          this.updateRabbitmqResponse(`⏳ Publishing message: ${buttonText}...`, 'info');
+        }
+      });
+    });
   }
 }
