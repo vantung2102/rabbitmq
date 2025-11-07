@@ -1,106 +1,10 @@
 - provide(:title, "RabbitMQ")
 
-/ Hero Section - SLIDE 1
-section.hero.bg-gradient-to-br.from-orange-600.via-purple-600.to-teal-600.py-24.text-center.relative.overflow-hidden
-  .absolute.inset-0.bg-black.opacity-10
-  .container.mx-auto.px-4.relative.z-10
-    .mb-6
-      .text-8xl.mb-4 🐰
-    h1.text-6xl.md:text-7xl.font-black.mb-6.text-white.drop-shadow-lg.leading-tight
-      | RabbitMQ
-    p.text-3xl.md:text-4xl.text-white.font-light.mb-4.opacity-95
-      | Message Queue Systems
-    .bg-white.bg-opacity-20.backdrop-blur-sm.rounded-2xl.p-6.mt-8.max-w-3xl.mx-auto
-      p.text-xl.text-white.mb-2.font-semibold 👨‍💻 Speaker: Zane
-      p.text-lg.text-white.opacity-90.mb-2 📅 RabbitMQ Architecture, Patterns & Implementation in Rails
+= render 'introduction'
+= render 'agenda'
+= render 'problem'
+= render 'solution'
 
-/ Agenda Section - SLIDE 2
-section.py-20.bg-gradient-to-b.from-base-200.to-base-100
-  .container.mx-auto.px-4
-    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
-      | 📋 Agenda
-    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
-      - agenda_items = [{ number: "1️⃣", title: "Problem & Solution", desc: "Synchronous vs Asynchronous Processing" }, { number: "2️⃣", title: "Message Queue Fundamentals", desc: "Message Queue & Message Broker" }, { number: "3️⃣", title: "RabbitMQ ⭐", desc: "Architecture, Exchange Types, Reliability" }, { number: "4️⃣", title: "Sidekiq Overview", desc: "Quick comparison with RabbitMQ" }, { number: "5️⃣", title: "Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" }, { number: "6️⃣", title: "Comparison & Decision", desc: "When to use what" }, { number: "7️⃣", title: "Q&A", desc: "Common questions & answers" }]
-      - agenda_items.each do |item|
-        .bg-white.p-6.rounded-2xl.shadow-xl.border-l-4.border-orange-500.transition-all.duration-300.hover:-translate-y-2.hover:shadow-2xl.hover:border-orange-600
-          .text-4xl.mb-3 = item[:number]
-          .text-xl.font-bold.mb-2.text-gray-800 = item[:title]
-          .text-sm.text-gray-600.leading-relaxed = item[:desc]
-
-/ Problem Section - SLIDE 3
-section.py-20.bg-base-100
-  .container.mx-auto.px-4
-    .bg-white.rounded-2xl.p-10.mt-8.shadow-2xl.border-2.border-red-200
-      .bg-gradient-to-r.from-red-50.to-red-100.p-8.rounded-2xl.border-l-6.border-red-600.mb-8.shadow-lg
-        h3.text-red-700.text-4xl.font-black.mb-3
-          | ❌ THE PROBLEM: Synchronous Processing
-        p.text-red-900.text-2xl.font-semibold.m-0
-          | Scenario: User Registration
-
-      .bg-gray-50.p-8.rounded-xl.mb-8.border-2.border-gray-300.shadow-lg
-        - flow_steps = [{ icon: "👤", text: "User submits form" }, { icon: "⏳", text: "Server creates account", time: "100ms" }, { icon: "⏳", text: "Server sends welcome email", time: "3-5s" }, { icon: "⏳", text: "Server resizes avatar", time: "2-3s" }, { icon: "⏳", text: "Server sends notification", time: "1-2s" }]
-        - flow_steps.each do |step|
-          .flex.items-center.gap-6.mb-4.p-4.bg-white.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow
-            .text-3xl = step[:icon]
-            .flex-1.text-lg.font-medium.text-gray-800 = step[:text]
-            - if step[:time]
-              .text-red-600.font-bold.text-lg.bg-red-50.px-4.py-2.rounded-lg = step[:time]
-          - unless step == flow_steps.last
-            .text-center.text-red-400.text-3xl.mb-2 ⬇️
-
-        .bg-gradient-to-r.from-red-500.to-red-600.text-white.border-2.border-red-700.rounded-xl.p-6.mt-6.flex.items-center.gap-4.font-bold.shadow-xl
-          .text-3xl ✅
-          .flex-1.text-xl
-            strong Response returned to user
-          .text-2xl.font-black 6-10 seconds
-
-      .bg-red-50.border-2.border-red-300.text-gray-800.p-8.rounded-xl.mt-8.shadow-lg
-        h4.text-red-700.font-black.text-2xl.mb-6
-          | ⚠️ Consequences:
-        ul.list-none.p-0.space-y-3
-          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Bad UX → 40% users leave if wait > 3s
-          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Server blocked, can't process other requests
-          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Cannot scale when traffic increases
-          li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg ❌ Single point of failure
-
-/ Solution Section - SLIDE 4
-section.py-20.bg-gradient-to-b.from-base-200.to-base-100
-  .container.mx-auto.px-4
-    .bg-white.rounded-2xl.p-10.mt-8.shadow-2xl.border-2.border-green-200
-      .bg-gradient-to-r.from-green-50.to-green-100.p-8.rounded-2xl.border-l-6.border-green-600.mb-8.shadow-lg
-        h3.text-green-700.text-4xl.font-black
-          | ✅ THE SOLUTION: Asynchronous Processing
-
-      .grid.grid-cols-1.md:grid-cols-2.gap-8.mt-8
-        div
-          .bg-white.p-6.rounded-lg.border-2.border-gray-200.mb-4
-            h4.text-lg.font-bold.mb-4.text-center Same scenario with Message Queue:
-            - async_steps = [{ icon: "👤", text: "User submits form" }, { icon: "⚡", text: "Server creates account", time: "100ms" }, { icon: "✅", text: "Server responds immediately", time: "200ms total", highlight: true }]
-            - async_steps.each do |step|
-              .flex.items-center.gap-4.mb-3 class="#{'bg-green-50 border-2 border-green-500' if step[:highlight]}"
-                .text-2xl = step[:icon]
-                .flex-1 = step[:text]
-                - if step[:time]
-                  .text-green-600.font-bold = step[:time]
-              - unless step == async_steps.last
-                .text-center.text-gray-400.text-xl.mb-3 ↓
-
-            .bg-purple-50.border-2.border-dashed.border-purple-500.p-4.rounded-lg.mt-4
-              p.font-bold.text-purple-600.mb-2 📬 Background:
-              p.font-mono.text-sm.my-1 ├─ Email job → Queue → Worker processes
-              p.font-mono.text-sm.my-1 ├─ Resize job → Queue → Worker processes
-              p.font-mono.text-sm.my-1 └─ Notification job → Queue → Worker processes
-
-        .bg-gradient-to-br.from-green-50.to-emerald-50.text-gray-800.p-8.rounded-xl.shadow-xl.border-2.border-green-300
-          h4.text-green-700.mb-6.font-black.text-2xl Benefits:
-          ul.list-none.p-0.space-y-3
-            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Great user experience (response < 300ms)
-            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Server not blocked
-            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Easy to scale (add workers)
-            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Fault tolerance
-            li.py-3.px-4.bg-white.rounded-lg.shadow-sm.text-lg.font-medium ✅ Automatic retry on failure
-
-/ Message Queue Section - SLIDE 5
 section.py-20.bg-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -159,7 +63,6 @@ section.py-20.bg-base-100
           .font-black.text-xl.mb-2.text-gray-800 = feature[:title]
           .text-sm.text-gray-600.font-medium = feature[:desc]
 
-/ Message Broker Section - SLIDE 6
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -198,7 +101,6 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
             strong.text-blue-700 Kafka
             span.text-gray-700.ml-2  - High throughput, streaming
 
-/ RabbitMQ Overview Section - SLIDE 7
 section.py-20.bg-gradient-to-b.from-base-100.to-base-200
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -231,7 +133,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
         - differentiators.each do |diff|
           span.bg-white.px-4.py-2.rounded-lg.shadow-sm.font-medium • #{diff}
 
-/ RabbitMQ Architecture Section - SLIDE 8
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -269,13 +170,11 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
         - exchange_reasons.each do |reason|
           span.bg-white.px-5.py-3.rounded-lg.shadow-sm.font-medium.text-gray-700 ✅ #{reason}
 
-/ Exchange Types Section - SLIDE 9
 section.py-20.bg-gradient-to-b.from-base-100.to-base-200
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
       | 🔀 RabbitMQ Exchange Types
 
-    / Direct Exchange
     .bg-white.rounded-2xl.p-10.mb-10.border-2.border-blue-500.shadow-2xl.hover:shadow-3xl.transition-shadow
       h3.text-3xl.font-bold.mb-4.text-blue-600
         | 1. Direct Exchange
@@ -313,7 +212,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
             p.font-mono.text-xs "warning" → warning_queue
             p.font-mono.text-xs "info" → info_queue
 
-    / Fanout Exchange
     .bg-white.rounded-2xl.p-10.mb-10.border-2.border-green-500.shadow-2xl.hover:shadow-3xl.transition-shadow
       h3.text-3xl.font-bold.mb-4.text-green-600
         | 2. Fanout Exchange
@@ -353,7 +251,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
             p.font-mono.text-xs → CRM service (add to pipeline)
             p.font-mono.text-xs → Notification service (push notification)
 
-    / Topic Exchange
     .bg-gradient-to-br.from-orange-50.to-yellow-50.rounded-2xl.p-10.mb-10.border-4.border-orange-500.shadow-2xl.hover:shadow-3xl.transition-shadow.relative
       .absolute.-top-5.left-8.bg-gradient-to-r.from-orange-500.to-orange-600.text-white.px-6.py-2.rounded-full.font-black.text-base.shadow-xl ⭐ MOST POWERFUL
       h3.text-3xl.font-bold.mb-4.text-orange-600
@@ -442,7 +339,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
             p.font-mono.text-xs
               | {pages: >50} → batch_processor
 
-    / Comparison Table
     .bg-white.rounded-2xl.p-10.mb-10.shadow-2xl
       h3.text-3xl.font-black.mb-8.text-center.text-gray-800 Compare 4 Exchange Types
       .overflow-x-auto
@@ -476,7 +372,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
           strong.text-purple-700 <1% cases:
           |  Headers
 
-/ Message Flow Section - SLIDE 10
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -505,7 +400,6 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
             strong.text-blue-700.font-bold Prefetch:
             span.text-gray-700  Limit number of messages consumer receives at once
 
-/ Reliability Mechanisms Section - SLIDE 11
 section.py-20.bg-gradient-to-b.from-base-100.to-base-200
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -519,7 +413,6 @@ section.py-20.bg-gradient-to-b.from-base-100.to-base-200
           h3.text-center.text-xl.mb-4.font-black.text-gray-800 = feature[:title]
           p.text-center.text-base.text-gray-700.leading-relaxed.m-0 = feature[:desc]
 
-/ Use Cases & Patterns Section - SLIDE 12
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -542,7 +435,6 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
         - use_cases.each do |use_case|
           .bg-white.px-4.py-3.rounded-lg.shadow-sm.font-medium.text-gray-700 • #{use_case}
 
-/ Sidekiq Overview Section - SLIDE 13
 section.py-20.bg-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -569,7 +461,6 @@ section.py-20.bg-base-100
           li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Faster for simple jobs
           li.py-2.px-4.rounded-lg.text-base.font-medium ✅ Easier setup & maintenance
 
-/ Detailed Comparison Section - SLIDE 14
 section.py-20.bg-gradient-to-b.from-base-200.to-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight
@@ -617,7 +508,6 @@ section.py-20.bg-gradient-to-b.from-base-200.to-base-100
           span.text-green-600 Sidekiq: 20/25
       p.mt-6.font-bold.text-xl.text-gray-800 Conclusion: No absolute winner - Depends on use case!
 
-/ Decision Framework Section - SLIDE 15
 section.py-20.bg-base-100
   .container.mx-auto.px-4
     h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight

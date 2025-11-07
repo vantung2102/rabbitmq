@@ -2,8 +2,9 @@
 
 section.py-16.bg-base-100
   .container.mx-auto.px-4
-    h1.text-center.mb-12.text-4xl.md:text-5xl.font-bold.text-orange-500
-      | 🚀 Live Demo: RabbitMQ vs Sidekiq
+    h1.text-center.mb-12.text-4xl.md:text-5xl.font-bold.text-orange-500.flex.items-center.justify-center.gap-3
+      = lucide_icon(:demo, class: 'w-12 h-12')
+      | Live Demo: RabbitMQ vs Sidekiq
 
     - if flash[:success]
       .alert.alert-success.mb-6.shadow-lg
@@ -13,10 +14,9 @@ section.py-16.bg-base-100
         = flash[:error]
 
     .grid.grid-cols-1.lg:grid-cols-2.gap-8
-      / Sidekiq Demo
       .bg-base-200.border-2.border-green-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
         .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
-          .text-5xl ⚡
+          = lucide_icon(:sidekiq, class: 'w-12 h-12 text-green-500')
           .text-3xl.font-bold.text-green-500 Sidekiq Demo
 
         .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
@@ -24,32 +24,28 @@ section.py-16.bg-base-100
           p.text-sm.text-base-content.opacity-80 Fast, simple background job processing for Ruby. Perfect for Rails monoliths with straightforward job queuing needs.
 
         .grid.grid-cols-2.gap-4.mb-8
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#sidekiq-processed 0
-            .text-sm.text-base-content.opacity-70 Processed
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#sidekiq-workers 0
-            .text-sm.text-base-content.opacity-70 Workers
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#sidekiq-failed 0
-            .text-sm.text-base-content.opacity-70 Failed
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#sidekiq-latency 0ms
-            .text-sm.text-base-content.opacity-70 Latency
+          = render 'demo/partials/stats_card', id: 'sidekiq-processed', value: '0', label: 'Processed'
+          = render 'demo/partials/stats_card', id: 'sidekiq-workers', value: '0', label: 'Workers'
+          = render 'demo/partials/stats_card', id: 'sidekiq-failed', value: '0', label: 'Failed'
+          = render 'demo/partials/stats_card', id: 'sidekiq-latency', value: '0ms', label: 'Latency'
 
-        = form_with url: send_email_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
-          h3.text-xl.font-bold.mb-4 📧 Send Email Job
-          .mb-4
-            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Email Address
-            = f.text_field :email, value: "demo@example.com", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "user@example.com"
-          = f.submit "📧 Send Email Job", class: "btn btn-success w-full"
+        = render 'demo/partials/demo_form',
+            url: send_email_demo_index_path,
+            form_class: 'mb-6',
+            icon: lucide_icon(:email, class: 'w-5 h-5'),
+            title: 'Send Email Job',
+            fields: [{ type: :text_field, name: :email, value: default_email, placeholder: 'user@example.com', label: 'Email Address' }],
+            submit_text: 'Send Email Job',
+            button_class: 'btn-success'
 
-        = form_with url: process_image_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
-          h3.text-xl.font-bold.mb-4 🖼️ Process Image
-          .mb-4
-            label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Image URL
-            = f.text_field :image_url, value: "https://example.com/image.jpg", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content", placeholder: "https://..."
-          = f.submit "🖼️ Process Image", class: "btn btn-success w-full"
+        = render 'demo/partials/demo_form',
+            url: process_image_demo_index_path,
+            form_class: 'mb-6',
+            icon: lucide_icon(:image, class: 'w-5 h-5'),
+            title: 'Process Image',
+            fields: [{ type: :text_field, name: :image_url, value: default_image_url, placeholder: 'https://...', label: 'Image URL' }],
+            submit_text: 'Process Image',
+            button_class: 'btn-success'
 
         .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
           pre#sidekiq-response.text-sm.font-mono.text-base-content
@@ -65,10 +61,9 @@ section.py-16.bg-base-100
             |
             | Last activity: None yet
 
-      / RabbitMQ Demo
       .bg-base-200.border-2.border-orange-500.rounded-xl.p-8.transition-all.hover:-translate-y-1.hover:shadow-lg
         .flex.items-center.gap-4.mb-6.pb-4.border-b-2.border-base-300
-          .text-5xl 🐰
+          = lucide_icon(:rabbitmq, class: 'w-12 h-12 text-orange-500')
           .text-3xl.font-bold.text-orange-500 RabbitMQ Demo
 
         .bg-orange-500.bg-opacity-10.border.border-orange-500.rounded-lg.p-4.mb-6
@@ -76,66 +71,63 @@ section.py-16.bg-base-100
           p.text-sm.text-base-content.opacity-80 Enterprise message broker with powerful routing. Ideal for microservices, event-driven architecture, and complex messaging patterns.
 
         .grid.grid-cols-2.gap-4.mb-8
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#rabbitmq-messages 0
-            .text-sm.text-base-content.opacity-70 Messages
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#rabbitmq-connections 0
-            .text-sm.text-base-content.opacity-70 Connections
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#rabbitmq-queues 5
-            .text-sm.text-base-content.opacity-70 Queues
-          .bg-base-100.p-4.rounded-lg.text-center.border.border-base-300
-            .text-3xl.font-bold.text-orange-500#rabbitmq-latency 0ms
-            .text-sm.text-base-content.opacity-70 Latency
+          = render 'demo/partials/stats_card', id: 'rabbitmq-messages', value: '0', label: 'Messages'
+          = render 'demo/partials/stats_card', id: 'rabbitmq-connections', value: '0', label: 'Connections'
+          = render 'demo/partials/stats_card', id: 'rabbitmq-queues', value: '5', label: 'Queues'
+          = render 'demo/partials/stats_card', id: 'rabbitmq-latency', value: '0ms', label: 'Latency'
 
-        = form_with url: create_order_demo_index_path, method: :post, local: true, class: "space-y-6" do |f|
-          .mb-6
-            h3.text-xl.font-bold.mb-4 📦 Create Order (Topic Exchange)
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Product
-              = f.text_field :product, value: "MacBook Pro", class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Amount
-              = f.number_field :amount, value: 2999, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
-              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us'], ['Global', 'global']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            = f.submit "📦 Create Order", class: "btn btn-primary w-full"
+        = render 'demo/partials/demo_form',
+            url: create_order_demo_index_path,
+            form_class: 'space-y-6',
+            icon: lucide_icon(:order, class: 'w-5 h-5'),
+            title: 'Create Order (Topic Exchange)',
+            fields: [
+              { type: :text_field, name: :product, value: default_product, label: 'Product' },
+              { type: :number_field, name: :amount, value: default_amount, label: 'Amount' },
+              { type: :select, name: :country, options: country_options, selected: default_country, label: 'Country' }
+            ],
+            submit_text: 'Create Order',
+            button_class: 'btn-primary'
 
-          = form_with url: paid_order_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
-            h3.text-xl.font-bold.mb-4 💰 Paid Order
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
-              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            = f.submit "💰 Paid Order", class: "btn btn-primary w-full"
+        = render 'demo/partials/demo_form',
+            url: paid_order_demo_index_path,
+            form_class: 'mb-6',
+            icon: lucide_icon(:paid, class: 'w-5 h-5'),
+            title: 'Paid Order',
+            fields: [{ type: :select, name: :country, options: country_options_short, selected: default_country, label: 'Country' }],
+            submit_text: 'Paid Order',
+            button_class: 'btn-primary'
 
-          = form_with url: shipped_order_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
-            h3.text-xl.font-bold.mb-4 🚚 Shipped Order
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Country
-              = f.select :country, [['Vietnam', 'vn'], ['USA', 'us']], { selected: 'vn' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            = f.submit "🚚 Shipped Order", class: "btn btn-primary w-full"
+        = render 'demo/partials/demo_form',
+            url: shipped_order_demo_index_path,
+            form_class: 'mb-6',
+            icon: lucide_icon(:shipped, class: 'w-5 h-5'),
+            title: 'Shipped Order',
+            fields: [{ type: :select, name: :country, options: country_options_short, selected: default_country, label: 'Country' }],
+            submit_text: 'Shipped Order',
+            button_class: 'btn-primary'
 
-          = form_with url: direct_exchange_demo_demo_index_path, method: :post, local: true, class: "mb-6" do |f|
-            h3.text-xl.font-bold.mb-4 🎯 Direct Exchange Demo
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Priority
-              = f.select :priority, [['High', 'high'], ['Medium', 'medium'], ['Low', 'low']], { selected: 'high' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            = f.submit "🎯 Direct Exchange", class: "btn btn-primary w-full"
+        = render 'demo/partials/demo_form',
+            url: direct_exchange_demo_demo_index_path,
+            form_class: 'mb-6',
+            icon: lucide_icon(:direct, class: 'w-5 h-5'),
+            title: 'Direct Exchange Demo',
+            fields: [{ type: :select, name: :priority, options: priority_options, selected: 'high', label: 'Priority' }],
+            submit_text: 'Direct Exchange',
+            button_class: 'btn-primary'
 
-          = form_with url: headers_exchange_demo_demo_index_path, method: :post, local: true do |f|
-            h3.text-xl.font-bold.mb-4 🔖 Headers Exchange Demo
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Format
-              = f.select :format, [['PDF', 'pdf'], ['DOCX', 'docx'], ['XLSX', 'xlsx']], { selected: 'pdf' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Priority
-              = f.select :priority, [['High', 'high'], ['Medium', 'medium'], ['Low', 'low']], { selected: 'high' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            .mb-4
-              label.block.text-sm.font-semibold.mb-2.text-base-content.opacity-80 Size
-              = f.select :size, [['Large', 'large'], ['Medium', 'medium'], ['Small', 'small']], { selected: 'large' }, class: "w-full p-3 bg-base-100 border border-base-300 rounded-lg text-base-content"
-            = f.submit "🔖 Headers Exchange", class: "btn btn-primary w-full"
+        = render 'demo/partials/demo_form',
+            url: headers_exchange_demo_demo_index_path,
+            form_class: '',
+            icon: lucide_icon(:headers, class: 'w-5 h-5'),
+            title: 'Headers Exchange Demo',
+            fields: [
+              { type: :select, name: :format, options: format_options, selected: 'pdf', label: 'Format' },
+              { type: :select, name: :priority, options: priority_options, selected: 'high', label: 'Priority' },
+              { type: :select, name: :size, options: size_options, selected: 'large', label: 'Size' }
+            ],
+            submit_text: 'Headers Exchange',
+            button_class: 'btn-primary'
 
         .bg-base-100.border.border-base-300.rounded-lg.p-4.mt-6.min-h-32.max-h-80.overflow-y-auto
           pre#rabbitmq-response.text-sm.font-mono.text-base-content

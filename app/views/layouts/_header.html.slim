@@ -1,12 +1,15 @@
 div class='flex justify-center items-center bg-base-100 text-base-content sticky top-0 z-30 h-16 w-full bg-opacity-90 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)]'
   a.flex.items-center.justify-center.gap-2.btn.btn-ghost.px-2[href='/' aria-current='page' aria-label='Homepage']
-    span.text-3xl 🐰
+    = lucide_icon(:rabbitmq, class: 'w-8 h-8')
     div class='font-title inline-flex text-lg md:text-2xl font-bold'
       span.text-orange-500 RabbitMQ
   div class='flex justify-end items-center flex-1 px-2 mx-2'
-    a.btn.btn-ghost.btn-sm.rounded-btn[href='/demo']
-      |  🚀 Live Demo
-    a.btn.btn-ghost.btn-sm.rounded-btn[href='https://www.rabbitmq.com' target='_blank']
-      |  🐇 RabbitMQ Docs
-    a.btn.btn-ghost.btn-sm.rounded-btn[href='https://sidekiq.org' target='_blank']
-      |  ⚡ Sidekiq Docs
+    a.btn.btn-ghost.btn-sm.rounded-btn.flex.items-center.gap-2[href='/demo']
+      = lucide_icon(:demo, class: 'w-4 h-4')
+      | Live Demo
+    a.btn.btn-ghost.btn-sm.rounded-btn.flex.items-center.gap-2[href='https://www.rabbitmq.com' target='_blank']
+      = lucide_icon(:rabbitmq, class: 'w-4 h-4')
+      | RabbitMQ Docs
+    a.btn.btn-ghost.btn-sm.rounded-btn.flex.items-center.gap-2[href='https://sidekiq.org' target='_blank']
+      = lucide_icon(:sidekiq, class: 'w-4 h-4')
+      | Sidekiq Docs

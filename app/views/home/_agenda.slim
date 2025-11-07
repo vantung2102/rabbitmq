@@ -1,0 +1,9 @@
+section.py-20.bg-gradient-to-b.from-base-200.to-base-100
+  .container.mx-auto.px-4
+    h2.section-title.text-5xl.font-black.text-center.mb-12.text-orange-600.tracking-tight.flex.items-center.justify-center.gap-3
+      | Agenda
+    .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+      - agenda_items.each do |item|
+        .bg-white.p-6.rounded-2xl.shadow-xl.border-l-4.border-orange-500.transition-all.duration-300.hover:-translate-y-2.hover:shadow-2xl.hover:border-orange-600
+          .text-xl.font-bold.mb-2.text-gray-800 = item[:title]
+          .text-sm.text-gray-600.leading-relaxed = item[:desc]
