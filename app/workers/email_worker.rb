@@ -1,7 +1,0 @@
-class EmailWorker < ApplicationWorker
-  sidekiq_options queue: 'default', retry: 3
-
-  def perform(email)
-    sleep 5
-  end
-end

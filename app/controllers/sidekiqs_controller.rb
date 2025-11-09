@@ -1,4 +1,4 @@
-class SidekiqController < ApplicationController
+class SidekiqsController < ApplicationController
   def send_email
     Sidekiqs::Create.call(:email, params[:email])
 

@@ -70,6 +70,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'pry'
   gem 'bullet'
   gem 'annotate'
   gem 'lefthook'

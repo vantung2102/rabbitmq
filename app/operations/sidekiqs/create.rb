@@ -14,8 +14,8 @@ module Sidekiqs
     private
 
     HANDLERS = {
-      email: ->(args) { EmailWorker.perform_async(args) },
-      image: ->(args) { ImageWorker.perform_async(args) }
+      email: ->(args) { EmailJob.perform_async(args) },
+      image: ->(args) { ImageJob.perform_async(args) }
     }.freeze
   end
 end

@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
 
   # Sidekiq routes
-  resources :sidekiq, only: [] do
+  resources :sidekiqs, only: [] do
     collection do
       post :send_email
       post :process_image
