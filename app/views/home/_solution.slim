@@ -1,12 +1,13 @@
-section.bg-green-50.py-6
-  .container.mx-auto.px-4.max-w-7xl
-    .text-center.mb-4
-      .inline-flex.items-center.gap-2.bg-green-600.text-white.px-4.py-1.5.rounded-xl.shadow-lg.mb-2
+.container.mx-auto.px-4.py-6.max-w-7xl
+  .text-center.mb-6
+    .flex.justify-center.mb-2
+      .inline-flex.items-center.gap-2.bg-green-600.text-white.px-4.py-1.5.rounded-xl.shadow-lg
         = lucide_icon(:check_circle, class: 'w-4 h-4')
         span.font-black.text-xs.uppercase.tracking-wide THE SOLUTION
 
-      h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight Asynchronous Processing
+    h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight Asynchronous Processing
 
+    .flex.justify-center.mb-2
       .inline-flex.items-center.gap-2.bg-white.px-3.py-1.5.rounded-full.shadow-md.border-2.border-green-300
         = lucide_icon(:zap, class: 'w-3 h-3 text-green-600')
         span.text-xs.font-bold.text-gray-700 Same Scenario with Message Queue

@@ -1,0 +1,109 @@
+// Slides fullscreen styles
+.slides-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  .slides-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateX(100%);
+    overflow-y: auto;
+    overflow-x: hidden;
+    will-change: transform, opacity;
+    scroll-padding-top: 5rem;
+
+    &.slide-active {
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 10;
+      pointer-events: auto;
+    }
+
+    &.hidden {
+      opacity: 0;
+      transform: translateX(-100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    // Ensure content starts from top with padding
+    > * {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    // Center titles
+    h1, h2, h3 {
+      text-align: center;
+    }
+
+    // Ensure container is centered
+    .container {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    // Smooth scrollbar
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+
+  // Navigation dots
+  [data-slides-target="dot"] {
+    transition: all 0.3s ease;
+
+    &[data-active="true"],
+    &.active {
+      width: 2rem;
+      background-color: white;
+      opacity: 1;
+    }
+  }
+
+  // Prevent body scroll when slides are active
+  body:has(&) {
+    overflow: hidden;
+  }
+}
+
+// Hide header on home page for fullscreen experience
+body:has(.slides-container) {
+  header {
+    display: none;
+  }
+
+  // Prevent body scroll
+  overflow: hidden;
+}
+
+// Smooth scroll behavior
+html {
+  scroll-behavior: smooth;
+}

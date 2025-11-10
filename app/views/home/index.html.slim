@@ -1,17 +1,63 @@
 - provide(:title, "RabbitMQ")
 
-= render 'introduction'
-= render 'agenda'
-= render 'problem'
-= render 'solution'
-= render 'message_queue'
-= render 'message_broker'
-= render 'rabbitmq'
-= render 'rabbitmq_architecture'
-= render 'rabbitmq_exchange_types'
-= render 'rabbitmq_message_flow'
-= render 'rabbitmq_reliability'
-= render 'rabbitmq_use_cases'
-= render 'comparison'
-= render 'decision_matrix'
-= render 'thank_you'
+div data-controller="slides" class="slides-container relative w-full h-screen overflow-hidden bg-gray-900"
+  .slides-wrapper.relative.w-full.h-full
+    / Slide 1: Introduction
+    section.slide data-slides-target="slide" class="w-full h-screen flex items-center justify-center overflow-y-auto bg-gradient-to-br from-orange-600 to-orange-800 pt-20 pb-20"
+      = render 'introduction'
+
+    / Slide 2: Agenda
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-gray-100 pt-20 pb-20"
+      = render 'agenda'
+
+    / Slide 3: Problem
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-gray-50 pt-20 pb-20"
+      = render 'problem'
+
+    / Slide 4: Solution
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-gradient-to-br from-green-50 to-green-100 pt-20 pb-20"
+      = render 'solution'
+
+    / Slide 5: Message Queue
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-blue-50 pt-20 pb-20"
+      = render 'message_queue'
+
+    / Slide 6: Message Broker
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-purple-50 pt-20 pb-20"
+      = render 'message_broker'
+
+    / Slide 7: RabbitMQ Overview
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-gradient-to-br from-purple-600 to-purple-800 pt-20 pb-20"
+      = render 'rabbitmq'
+
+    / Slide 8: RabbitMQ Architecture
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-indigo-50 pt-20 pb-20"
+      = render 'rabbitmq_architecture'
+
+    / Slide 9: Exchange Types
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-amber-50 pt-20 pb-20"
+      = render 'rabbitmq_exchange_types'
+
+    / Slide 10: Message Flow
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-cyan-50 pt-20 pb-20"
+      = render 'rabbitmq_message_flow'
+
+    / Slide 11: Reliability
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-teal-50 pt-20 pb-20"
+      = render 'rabbitmq_reliability'
+
+    / Slide 12: Use Cases
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-pink-50 pt-20 pb-20"
+      = render 'rabbitmq_use_cases'
+
+    / Slide 13: Comparison
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-violet-50 pt-20 pb-20"
+      = render 'comparison'
+
+    / Slide 14: Decision Matrix
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-rose-50 pt-20 pb-20"
+      = render 'decision_matrix'
+
+    / Slide 15: Thank You
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-center justify-center overflow-y-auto bg-gradient-to-br from-orange-400 to-pink-500 pt-20 pb-20"
+      = render 'thank_you'

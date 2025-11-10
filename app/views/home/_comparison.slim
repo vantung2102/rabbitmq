@@ -1,11 +1,11 @@
-section.bg-orange-50.py-6
-  .container.mx-auto.px-4.max-w-7xl
-    .text-center.mb-4
-      .inline-flex.items-center.gap-2.bg-orange-600.text-white.px-4.py-1.5.rounded-xl.shadow-lg.mb-2
+.container.mx-auto.px-4.py-6.max-w-7xl
+  .text-center.mb-6
+    .flex.justify-center.mb-2
+      .inline-flex.items-center.gap-2.bg-orange-600.text-white.px-4.py-1.5.rounded-xl.shadow-lg
         = lucide_icon(:comparison, class: 'w-4 h-4')
         span.font-black.text-xs.uppercase.tracking-wide COMPARISON
 
-      h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight RabbitMQ vs Sidekiq
+    h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight RabbitMQ vs Sidekiq
 
     .space-y-3
       - comparison_categories.each do |category|
