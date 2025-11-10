@@ -133,8 +133,8 @@ module HomeHelper
   # Message flow steps
   MESSAGE_FLOW_STEPS = [
     "Producer creates message",
-    "Publish to Exchange (with routing key)",
-    "Exchange evaluates routing rules",
+    "Producer sends message to Exchange (via Channel)",
+    "Exchange receives message",
     "Message routed to Queue(s) based on bindings",
     "Queue persists message (if durable)",
     "Consumer fetches message from Queue",
@@ -193,24 +193,25 @@ module HomeHelper
       number: 1,
       name: "Direct Exchange",
       color: "blue",
-      mechanism: "Exact match routing key",
-      flow_steps: [
-        'Message: "order.payment"',
-        "Exchange checks bindings",
-        "Queue receives message"
+      mechanism: "Routes messages based on exact routing key match",
+      definition: [
+        "Routes messages based on exact routing key match",
+        "Messages are sent to queues with binding keys identical to the routing key"
       ],
       advantages: [
-        "Simple, high performance",
-        "Suitable for simple routing"
+        "Simple and easy to understand",
+        "Precise routing without confusion",
+        "Good performance"
       ],
       disadvantages: [
-        "Not flexible",
-        "Hard to maintain when scaling"
+        "Not flexible, requires exact match",
+        "No pattern matching support",
+        "Hard to scale with many routing rules"
       ],
       when_to_use: [
-        "Priority queues",
-        "Task distribution",
-        "Simple 1-to-1 routing"
+        "Need to categorize messages by clear categories",
+        "Simple routing logic",
+        "Example: categorizing log levels (info, warning, error)"
       ],
       example_title: "Logs",
       examples: [
@@ -223,23 +224,24 @@ module HomeHelper
       name: "Fanout Exchange",
       color: "green",
       mechanism: "Broadcast to ALL queues",
-      flow_steps: [
-        "Message arrives",
-        "Broadcast to ALL",
-        "Ignore routing key"
+      definition: [
+        "Broadcasts messages to ALL bound queues",
+        "Completely ignores routing key"
       ],
       advantages: [
-        "Efficient broadcasting",
-        "Perfect pub/sub"
+        "Simplest broadcasting mechanism",
+        "Fastest among all exchange types",
+        "Easy to add new consumers"
       ],
       disadvantages: [
-        "No filtering",
-        "Can be wasteful"
+        "No routing control",
+        "Consumers receive all messages (potentially redundant)",
+        "Not suitable when selective routing is needed"
       ],
       when_to_use: [
-        "Logging system",
-        "Cache invalidation",
-        "Event broadcasting"
+        "Need to send messages to multiple services simultaneously",
+        "Broadcasting events (user registered, order placed)",
+        "Real-time notifications to multiple channels"
       ],
       example_title: "User registered",
       examples: [
@@ -252,6 +254,12 @@ module HomeHelper
       color: "orange",
       mechanism: "Pattern matching (*, #)",
       is_most_powerful: true,
+      definition: [
+        "Routes based on pattern matching with wildcards",
+        "* (star): matches exactly one word",
+        "# (hash): matches zero or more words",
+        "Routing key uses `.` as separator (e.g., `order.payment.success`)"
+      ],
       wildcards: [
         "* = 1 word",
         "# = 0+ words"
@@ -259,17 +267,21 @@ module HomeHelper
       example_pattern: '"order.created.vn"',
       example_binding: 'Bindings: "order.*"',
       advantages: [
-        "Extremely flexible",
-        "Powerful patterns"
+        "Most flexible routing",
+        "Supports complex filtering",
+        "One queue can bind multiple patterns",
+        "Easy to extend and maintain"
       ],
       disadvantages: [
-        "More complex",
-        "Slower performance"
+        "More complex than direct and fanout",
+        "Slightly slower performance (due to pattern matching)",
+        "Easy to confuse if patterns aren't well documented"
       ],
       when_to_use: [
-        "Event-driven microservices",
-        "Multi-tenant systems",
-        "Geographical routing"
+        "Logging systems with multiple levels/modules",
+        "Complex event routing",
+        "Need to filter messages by multiple criteria",
+        "Example: `region.service.action` → `asia.payment.refund`"
       ],
       example_title: "E-commerce",
       examples: [
@@ -281,22 +293,25 @@ module HomeHelper
       name: "Headers Exchange",
       color: "purple",
       mechanism: "Match by headers",
-      flow_steps: [
-        '"Headers: {format: "pdf"}"',
-        "Match headers",
-        "Route to queue"
+      definition: [
+        "Routes based on message headers instead of routing key",
+        "Uses `x-match`: `all` (match all) or `any` (match any)"
       ],
       advantages: [
-        "Complex routing logic",
-        "Multiple criteria"
+        "More complex routing than topic exchange",
+        "Can match by multiple attributes",
+        "Not dependent on routing key format"
       ],
       disadvantages: [
-        "Lowest performance",
-        "Rarely used"
+        "Lowest performance (compared to other types)",
+        "Less commonly used and less documentation",
+        "More complex to debug",
+        "Not as popular as topic exchange"
       ],
       when_to_use: [
-        "Content-based routing",
-        "Complex business rules"
+        "Need routing based on multiple complex attributes",
+        "Routing logic doesn't fit string patterns",
+        "Example: task scheduling with multiple conditions (priority + format + region)"
       ],
       example_title: "File processing",
       examples: [
@@ -319,8 +334,7 @@ module HomeHelper
     { icon: "💾", title: "Message Durability", desc: "Durable Queue + Persistent Messages = survive RabbitMQ restart" },
     { icon: "📩", title: "Publisher Confirms", desc: "Producer receives confirmation from RabbitMQ, ensures message was accepted" },
     { icon: "💀", title: "Dead Letter Exchange (DLX)", desc: "Queue for undeliverable messages (TTL expired, queue full, consumer reject)" },
-    { icon: "⏰", title: "Message TTL & Queue Length", desc: "TTL: Message expires after X seconds. Max Length: Queue limits number of messages" },
-    { icon: "🔄", title: "Clustering & Mirroring", desc: "Multiple RabbitMQ nodes, queue mirroring, high availability, no single point of failure" }
+    { icon: "⏰", title: "Message TTL & Queue Length", desc: "TTL: Message expires after X seconds. Max Length: Queue limits number of messages" }
   ].freeze
 
   # Use case patterns
@@ -350,8 +364,8 @@ module HomeHelper
     {
       title: "Architecture & Protocol",
       items: [
-        { aspect: "Type", rabbitmq: "Message Broker (standalone)", sidekiq: "Background job library" },
-        { aspect: "Protocol", rabbitmq: "AMQP (standardized)", sidekiq: "Redis protocol" },
+        { aspect: "Type", rabbitmq: "Message Broker", sidekiq: "Background job library" },
+        { aspect: "Protocol", rabbitmq: "AMQP", sidekiq: "Redis protocol" },
         { aspect: "Storage", rabbitmq: "Disk-based + Memory", sidekiq: "In-memory (RAM only)" },
         { aspect: "Language", rabbitmq: "Erlang (highly concurrent)", sidekiq: "Ruby + Redis" }
       ]

@@ -27,131 +27,83 @@
             div class=badge_classes
               span.text-white.font-black.text-5xl.drop-shadow-lg = ex[:number]
 
-            div.flex-1
+            div
               h3.text-4xl.font-black.mb-2 class=c[:text]
                 = ex[:name]
                 - if ex[:is_most_powerful]
                   span.text-orange-600.ml-3.text-3xl ⭐
 
-          - mech_bg = "bg-#{ex[:color]}-100 rounded-xl px-5 py-3 border-l-4 #{c[:border]} shadow-md"
-          div class=mech_bg
-            .flex.items-center.gap-2
-              = lucide_icon(:settings, class: "w-5 h-5 #{c[:text]}")
-              p.text-lg.font-bold.text-gray-900 = ex[:mechanism]
+          / Definition dưới title
+          - if ex[:definition]
+            .bg-white.rounded-xl.p-5.shadow-lg.border-2.mt-4 class="border-#{ex[:color]}-200"
+              .flex.items-center.gap-3.mb-4.pb-3.border-b-2.border-gray-100
+                - icon_bg = "#{badge_color} p-2 rounded-xl shadow-md"
+                div class=icon_bg
+                  = lucide_icon(:info, class: "w-5 h-5 text-white")
+                h4.text-xl.font-black.text-gray-900 Definition
 
-        .grid.grid-cols-1.lg:grid-cols-2.gap-5
+              .space-y-3
+                - ex[:definition].each do |def_item|
+                  - def_bg = "flex items-start gap-3 p-3 bg-#{ex[:color]}-50 rounded-lg border-2 border-#{ex[:color]}-300 hover:border-#{ex[:color]}-500 hover:shadow-md transition-all"
+                  div class=def_bg
+                    = lucide_icon(:chevron_right, class: "w-5 h-5 #{c[:text]}")
+                    p.text-sm.font-semibold.text-gray-900.leading-relaxed = def_item
+
+        .grid.grid-cols-1.lg:grid-cols-2.gap-5.mb-5
+          / Benefits
           .space-y-4
-            - if ex[:wildcards]
-              .bg-white.rounded-xl.p-5.shadow-lg.border-2 class="border-#{ex[:color]}-200"
-                .flex.items-center.gap-3.mb-4.pb-3.border-b-2.border-gray-100
-                  - icon_bg = "#{badge_color} p-2 rounded-xl shadow-md"
-                  div class=icon_bg
-                    = lucide_icon(:code, class: "w-5 h-5 text-white")
-                  h4.text-xl.font-black.text-gray-900 Wildcards
-
-                .space-y-3.mb-4
-                  - ex[:wildcards].each do |wildcard|
-                    - item_bg = "flex items-center gap-3 p-3 bg-#{ex[:color]}-50 rounded-lg border-2 border-#{ex[:color]}-300 hover:border-#{ex[:color]}-500 hover:shadow-md transition-all"
-                    div class=item_bg
-                      = lucide_icon(:chevron_right, class: "w-5 h-5 #{c[:text]}")
-                      p.font-mono.text-base.text-gray-900.font-bold = wildcard
-
-                - example_bg = "bg-#{ex[:color]}-50 p-4 rounded-xl border-2 border-#{ex[:color]}-200"
-                div class=example_bg
-                  .flex.items-center.gap-2.mb-3
-                    = lucide_icon(:lightbulb, class: 'w-5 h-5 text-amber-600')
-                    h5.text-base.font-bold.text-gray-900 Example:
-                  .space-y-2
-                    .bg-white.p-3.rounded-lg.border-2.border-gray-300.shadow-sm
-                      p.font-mono.text-sm.text-gray-900.font-semibold = ex[:example_pattern]
-                    .bg-white.p-3.rounded-lg.border-2.border-gray-300.shadow-sm
-                      p.font-mono.text-sm.text-gray-900.font-semibold = ex[:example_binding]
-
-            - elsif ex[:flow_steps]
-              .bg-white.rounded-xl.p-5.shadow-lg.border-2 class="border-#{ex[:color]}-200"
-                .space-y-3
-                  - ex[:flow_steps].each_with_index do |step, idx|
-                    .flex.items-start.gap-3.group
-                      - step_badge = "flex-shrink-0 w-12 h-12 rounded-xl #{badge_color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-all border-2 border-white"
-                      div class=step_badge
-                        span.text-white.font-black.text-xl.drop-shadow-md = idx + 1
-
-                      - step_bg = "flex-1 bg-#{ex[:color]}-50 rounded-xl p-3 border-2 border-#{ex[:color]}-300 group-hover:border-#{ex[:color]}-500 group-hover:shadow-md transition-all"
-                      div class=step_bg
-                        p.text-sm.font-semibold.text-gray-900 = step
-
-                    - unless idx == ex[:flow_steps].length - 1
-                      .flex.justify-center.ml-5
-                        = lucide_icon(:arrow_down, class: "w-5 h-5 #{c[:text]} animate-bounce")
-
-            .space-y-4
-              .bg-green-600.rounded-xl.px-4.py-3.shadow-lg
-                .flex.items-center.gap-2
-                  .bg-white.p-1.5.rounded-lg.shadow-md
-                    = lucide_icon(:check_circle, class: 'w-4 h-4 text-green-600')
-                  .text-white
-                    .text-xs.font-bold.uppercase.tracking-wider Advantages
-                    .text-base.font-black Benefits
-
-              .bg-white.rounded-xl.p-4.shadow-lg.border-2.border-green-300
-                ul.space-y-2.5
-                  - ex[:advantages].each_with_index do |adv, idx|
-                    li.flex.items-start.gap-3.p-3.rounded-lg.bg-green-50.border-2.border-green-300.hover:border-green-500.hover:shadow-md.transition-all.group
-                      .flex-shrink-0.w-8.h-8.rounded-full.bg-green-600.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
-                        span.text-white.font-black.text-sm.drop-shadow-md = idx + 1
-                      p.text-sm.font-semibold.text-gray-900.leading-snug = adv
-
-              .bg-red-600.rounded-xl.px-4.py-3.shadow-lg
-                .flex.items-center.gap-2
-                  .bg-white.p-1.5.rounded-lg.shadow-md
-                    = lucide_icon(:x_circle, class: 'w-4 h-4 text-red-600')
-                  .text-white
-                    .text-xs.font-bold.uppercase.tracking-wider Disadvantages
-                    .text-base.font-black Limitations
-
-              .bg-white.rounded-xl.p-4.shadow-lg.border-2.border-red-300
-                ul.space-y-2.5
-                  - ex[:disadvantages].each_with_index do |dis, idx|
-                    li.flex.items-start.gap-3.p-3.rounded-lg.bg-red-50.border-2.border-red-300.hover:border-red-500.hover:shadow-md.transition-all.group
-                      .flex-shrink-0.w-8.h-8.rounded-full.bg-red-600.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
-                        span.text-white.font-black.text-sm.drop-shadow-md = idx + 1
-                      p.text-sm.font-semibold.text-gray-900.leading-snug = dis
-
-          .space-y-4
-            - use_header_color = {"blue" => "bg-blue-600", "green" => "bg-green-600", "orange" => "bg-orange-600", "purple" => "bg-purple-600"}[ex[:color]]
-            - use_header_classes = "#{use_header_color} rounded-xl px-4 py-3 shadow-lg"
-            div class=use_header_classes
+            .bg-green-600.rounded-xl.px-4.py-3.shadow-lg
               .flex.items-center.gap-2
                 .bg-white.p-1.5.rounded-lg.shadow-md
-                  = lucide_icon(:target, class: "w-4 h-4 #{c[:text]}")
+                  = lucide_icon(:check_circle, class: 'w-4 h-4 text-green-600')
                 .text-white
-                  .text-xs.font-bold.uppercase.tracking-wider When to Use
-                  .text-base.font-black Use Cases
+                  .text-xs.font-bold.uppercase.tracking-wider Advantages
 
-            .bg-white.rounded-xl.p-4.shadow-lg.border-2 class="border-#{ex[:color]}-200"
+            .bg-white.rounded-xl.p-4.shadow-lg.border-2.border-green-300
               ul.space-y-2.5
-                - ex[:when_to_use].each_with_index do |use, idx|
-                  - use_bg = "flex items-start gap-3 p-3 rounded-lg bg-#{ex[:color]}-50 border-2 border-#{ex[:color]}-300 hover:border-#{ex[:color]}-500 hover:shadow-md transition-all"
-                  li class=use_bg
-                    - use_badge_color = {"blue" => "bg-blue-600", "green" => "bg-green-600", "orange" => "bg-orange-600", "purple" => "bg-purple-600"}[ex[:color]]
-                    - badge_classes = "flex-shrink-0 w-9 h-9 rounded-full #{use_badge_color} flex items-center justify-center shadow-xl hover:scale-110 transition-transform border-2 border-white"
-                    div class=badge_classes
-                      span.text-white.font-black.text-base.drop-shadow-md = idx + 1
-                    p.text-sm.font-semibold.text-gray-900.leading-snug = use
+                - ex[:advantages].each_with_index do |adv, idx|
+                  li.flex.items-center.gap-3.p-3.rounded-lg.bg-green-50.border-2.border-green-300.hover:border-green-500.hover:shadow-md.transition-all.group
+                    .flex-shrink-0.w-8.h-8.rounded-full.bg-green-600.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
+                      span.text-white.font-black.text-sm.drop-shadow-md = idx + 1
+                    p.text-sm.font-semibold.text-gray-900.leading-snug.flex.items-center.justify-center = adv
 
-            - example_card_bg = "bg-#{ex[:color]}-50 rounded-xl p-5 shadow-lg border-2 border-#{ex[:color]}-200"
-            div class=example_card_bg
-              .flex.items-center.gap-3.mb-4.pb-3.border-b-2.border-gray-200
-                - example_icon_color = {"blue" => "bg-blue-600", "green" => "bg-green-600", "orange" => "bg-orange-600", "purple" => "bg-purple-600"}[ex[:color]]
-                - icon_classes = "#{example_icon_color} p-2 rounded-xl shadow-md"
-                div class=icon_classes
-                  = lucide_icon(:code_2, class: "w-5 h-5 text-white")
-                h4.text-lg.font-bold.text-gray-900
-                  = "Example: #{ex[:example_title]}"
-              .space-y-2.5
-                - ex[:examples].each do |example|
-                  .bg-white.p-3.rounded-lg.border-2.border-gray-300.hover:shadow-md.transition-all
-                    p.font-mono.text-sm.text-gray-900.font-semibold = example
+          / Limitations
+          .space-y-4
+            .bg-red-600.rounded-xl.px-4.py-3.shadow-lg
+              .flex.items-center.gap-2
+                .bg-white.p-1.5.rounded-lg.shadow-md
+                  = lucide_icon(:x_circle, class: 'w-4 h-4 text-red-600')
+                .text-white
+                  .text-xs.font-bold.uppercase.tracking-wider Disadvantages
+
+            .bg-white.rounded-xl.p-4.shadow-lg.border-2.border-red-300
+              ul.space-y-2.5
+                - ex[:disadvantages].each_with_index do |dis, idx|
+                  li.flex.items-center.gap-3.p-3.rounded-lg.bg-red-50.border-2.border-red-300.hover:border-red-500.hover:shadow-md.transition-all.group
+                    .flex-shrink-0.w-8.h-8.rounded-full.bg-red-600.flex.items-center.justify-center.shadow-lg.group-hover:scale-110.transition-all.border-2.border-white
+                      span.text-white.font-black.text-sm.drop-shadow-md = idx + 1
+                    p.text-sm.font-semibold.text-gray-900.leading-snug.flex.items-center.justify-center = dis
+
+        / When to Use - full width dưới cùng
+        - use_header_color = {"blue" => "bg-blue-600", "green" => "bg-green-600", "orange" => "bg-orange-600", "purple" => "bg-purple-600"}[ex[:color]]
+        - use_header_classes = "#{use_header_color} rounded-xl px-4 py-3 shadow-lg"
+        div class=use_header_classes
+          .flex.items-center.gap-2
+            .bg-white.p-1.5.rounded-lg.shadow-md
+              = lucide_icon(:target, class: "w-4 h-4 #{c[:text]}")
+            .text-white
+              .text-xs.font-bold.uppercase.tracking-wider When to Use
+
+        .bg-white.rounded-xl.p-4.shadow-lg.border-2.mt-4 class="border-#{ex[:color]}-200"
+          ul.space-y-2.5
+            - ex[:when_to_use].each_with_index do |use, idx|
+              - use_bg = "flex items-center gap-3 p-3 rounded-lg bg-#{ex[:color]}-50 border-2 border-#{ex[:color]}-300 hover:border-#{ex[:color]}-500 hover:shadow-md transition-all"
+              li class=use_bg
+                - use_badge_color = {"blue" => "bg-blue-600", "green" => "bg-green-600", "orange" => "bg-orange-600", "purple" => "bg-purple-600"}[ex[:color]]
+                - badge_classes = "flex-shrink-0 w-9 h-9 rounded-full #{use_badge_color} flex items-center justify-center shadow-xl hover:scale-110 transition-transform border-2 border-white"
+                div class=badge_classes
+                  span.text-white.font-black.text-base.drop-shadow-md = idx + 1
+                p.text-sm.font-semibold.text-gray-900.leading-snug.flex.items-center.justify-center = use
 
     .bg-white.rounded-2xl.shadow-xl.border-2.border-orange-300.overflow-hidden.mb-5
       .bg-orange-600.px-6.py-4
@@ -160,7 +112,6 @@
             = lucide_icon(:table, class: 'w-5 h-5 text-orange-600')
           .text-white
             .text-xs.font-bold.uppercase.tracking-wider Comparison
-            .text-lg.font-black Compare 4 Exchange Types
 
       .p-6
         .overflow-x-auto

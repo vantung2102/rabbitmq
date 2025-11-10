@@ -7,70 +7,115 @@
 
     h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight What is Message Broker?
 
-    .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden.mb-4
+  .grid.grid-cols-1.lg:grid-cols-2.gap-4.mb-4
+    / Definition Card
+    .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden
       .bg-purple-600.px-4.py-3
         .flex.items-center.gap-2
           .bg-white.p-1.5.rounded-lg.shadow-md
             = lucide_icon(:building_2, class: 'w-4 h-4 text-purple-600')
           .text-white
             .text-xs.font-bold.uppercase.tracking-wider Definition
-            .text-base.font-black Smart Post Office
+            .text-base.font-black Message Broker
 
       .p-4
-        p.text-sm.font-semibold.text-gray-800.leading-relaxed.mb-2
-          strong.text-purple-700 Message Broker
-          |  = "Smart Post Office"
-        p.text-xs.text-gray-700.leading-relaxed.m-0
-          | Middleware between Producer and Consumer, ensuring messages are: &nbsp;
-          strong.text-purple-600 Received → Routed → Stored → Delivered → Guaranteed
+        p.text-sm.text-gray-700.leading-relaxed.m-0
+          | A Message Broker is middleware software that acts as an intermediary between different applications, services, or systems to facilitate message exchange.
 
-    .grid.grid-cols-1.lg:grid-cols-2.gap-4
-      .bg-white.rounded-2xl.shadow-xl.border-2.border-orange-300.overflow-hidden
-        .bg-orange-600.px-4.py-3
-          .flex.items-center.gap-2
-            .bg-white.p-1.5.rounded-lg.shadow-md
-              = lucide_icon(:git_compare, class: 'w-4 h-4 text-orange-600')
-            .text-white
-              .text-xs.font-bold.uppercase.tracking-wider Comparison
-              .text-base.font-black Queue vs Broker
+    / Key Functions Card
+    .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden
+      .bg-purple-600.px-4.py-3
+        .flex.items-center.gap-2
+          .bg-white.p-1.5.rounded-lg.shadow-md
+            = lucide_icon(:zap, class: 'w-4 h-4 text-purple-600')
+          .text-white
+            .text-xs.font-bold.uppercase.tracking-wider Key Functions
+            .text-base.font-black Core Operations
 
-        .p-4
-          .space-y-2
-            .flex.items-start.gap-3.p-3.rounded-lg.bg-orange-50.border-2.border-orange-300.hover:border-orange-500.hover:shadow-md.transition-all.group
-              .flex-shrink-0.w-9.h-9.rounded-xl.bg-orange-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all.border-2.border-white
-                = lucide_icon(:list, class: 'w-4 h-4 text-white')
+      .p-4
+        .space-y-2
+          .flex.items-start.gap-2.p-2.rounded-lg.bg-purple-50.border-2.border-purple-200
+            .flex-shrink-0.w-5.h-5.rounded-full.bg-purple-600.flex.items-center.justify-center.text-white.text-xs.font-bold.mt-0.5 1
+            .flex-1.text-xs.text-gray-700.leading-snug
+              | Receives messages from sender applications (producers/publishers)
 
-              .flex-1
-                .text-sm.font-black.text-gray-900.mb-0.5
-                  strong.text-orange-700 Message Queue:
-                .text-xs.text-gray-700.leading-snug Data structure (queue)
+          .flex.items-start.gap-2.p-2.rounded-lg.bg-purple-50.border-2.border-purple-200
+            .flex-shrink-0.w-5.h-5.rounded-full.bg-purple-600.flex.items-center.justify-center.text-white.text-xs.font-bold.mt-0.5 2
+            .flex-1.text-xs.text-gray-700.leading-snug
+              | Temporarily stores messages
 
-            .flex.items-start.gap-3.p-3.rounded-lg.bg-orange-50.border-2.border-orange-300.hover:border-orange-500.hover:shadow-md.transition-all.group
-              .flex-shrink-0.w-9.h-9.rounded-xl.bg-orange-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all.border-2.border-white
-                = lucide_icon(:layers, class: 'w-4 h-4 text-white')
+          .flex.items-start.gap-2.p-2.rounded-lg.bg-purple-50.border-2.border-purple-200
+            .flex-shrink-0.w-5.h-5.rounded-full.bg-purple-600.flex.items-center.justify-center.text-white.text-xs.font-bold.mt-0.5 3
+            .flex-1.text-xs.text-gray-700.leading-snug
+              | Forwards messages to receiver applications (consumers/subscribers)
 
-              .flex-1
-                .text-sm.font-black.text-gray-900.mb-0.5
-                  strong.text-orange-700 Message Broker:
-                .text-xs.text-gray-700.leading-snug Complete system (queues + routing + persistence)
+          .flex.items-start.gap-2.p-2.rounded-lg.bg-purple-50.border-2.border-purple-200
+            .flex-shrink-0.w-5.h-5.rounded-full.bg-purple-600.flex.items-center.justify-center.text-white.text-xs.font-bold.mt-0.5 4
+            .flex-1.text-xs.text-gray-700.leading-snug
+              | Ensures messages are delivered correctly without loss
 
-      .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden
-        .bg-purple-600.px-4.py-3
-          .flex.items-center.gap-2
-            .bg-white.p-1.5.rounded-lg.shadow-md
-              = lucide_icon(:star, class: 'w-4 h-4 text-purple-600')
-            .text-white
-              .text-xs.font-bold.uppercase.tracking-wider Popular
-              .text-base.font-black Message Brokers
+  / Benefits Card
+  .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden.mb-4
+    .bg-purple-600.px-4.py-3
+      .flex.items-center.gap-2
+        .bg-white.p-1.5.rounded-lg.shadow-md
+          = lucide_icon(:sparkles, class: 'w-4 h-4 text-purple-600')
+        .text-white
+          .text-xs.font-bold.uppercase.tracking-wider Benefits
+          .text-base.font-black Key Advantages
 
-        .p-4
-          .space-y-2
-            - popular_brokers.each do |broker|
-              .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-300.hover:border-purple-500.hover:shadow-md.transition-all.group
-                .flex-shrink-0.w-10.h-10.rounded-xl.bg-white.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all.text-xl.border-2.border-gray-200
-                  = broker[:icon]
+    .p-4
+      .grid.grid-cols-1.md:grid-cols-2.gap-3
+        .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-200.hover:border-purple-400.hover:shadow-md.transition-all.group
+          .flex-shrink-0.w-8.h-8.rounded-lg.bg-purple-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all
+            = lucide_icon(:unlink, class: 'w-4 h-4 text-white')
+          .flex-1
+            .text-sm.font-black.text-gray-900.mb-1 System Decoupling
+            .text-xs.text-gray-700.leading-snug
+              | Sender and receiver don't need to know about each other, only connect to the broker
 
-                .flex-1
-                  .text-sm.font-black.text-gray-900.mb-0.5
-                    strong class="text-#{broker[:color]}-700" = broker[:name]
-                  .text-xs.text-gray-700.leading-snug = broker[:desc]
+        .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-200.hover:border-purple-400.hover:shadow-md.transition-all.group
+          .flex-shrink-0.w-8.h-8.rounded-lg.bg-purple-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all
+            = lucide_icon(:shield_check, class: 'w-4 h-4 text-white')
+          .flex-1
+            .text-sm.font-black.text-gray-900.mb-1 Reliability
+            .text-xs.text-gray-700.leading-snug
+              | Ensures successful message delivery even when receiving system is temporarily unavailable
+
+        .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-200.hover:border-purple-400.hover:shadow-md.transition-all.group
+          .flex-shrink-0.w-8.h-8.rounded-lg.bg-purple-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all
+            = lucide_icon(:trending_up, class: 'w-4 h-4 text-white')
+          .flex-1
+            .text-sm.font-black.text-gray-900.mb-1 Scalability
+            .text-xs.text-gray-700.leading-snug
+              | Easy to add/remove connected applications
+
+        .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-200.hover:border-purple-400.hover:shadow-md.transition-all.group
+          .flex-shrink-0.w-8.h-8.rounded-lg.bg-purple-600.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all
+            = lucide_icon(:refresh_cw, class: 'w-4 h-4 text-white')
+          .flex-1
+            .text-sm.font-black.text-gray-900.mb-1 Asynchronous Processing
+            .text-xs.text-gray-700.leading-snug
+              | Systems can operate independently without waiting for each other
+
+  / Popular Message Brokers
+  .bg-white.rounded-2xl.shadow-xl.border-2.border-purple-300.overflow-hidden
+    .bg-purple-600.px-4.py-3
+      .flex.items-center.gap-2
+        .bg-white.p-1.5.rounded-lg.shadow-md
+          = lucide_icon(:star, class: 'w-4 h-4 text-purple-600')
+        .text-white
+          .text-xs.font-bold.uppercase.tracking-wider Popular
+          .text-base.font-black Message Brokers
+
+    .p-4
+      .space-y-2
+        - popular_brokers.each do |broker|
+          .flex.items-start.gap-3.p-3.rounded-lg.bg-purple-50.border-2.border-purple-300.hover:border-purple-500.hover:shadow-md.transition-all.group
+            .flex-shrink-0.w-10.h-10.rounded-xl.bg-white.flex.items-center.justify-center.shadow-md.group-hover:scale-110.transition-all.text-xl.border-2.border-gray-200
+              = broker[:icon]
+
+            .flex-1
+              .text-sm.font-black.text-gray-900.mb-0.5
+                strong class="text-#{broker[:color]}-700" = broker[:name]
+              .text-xs.text-gray-700.leading-snug = broker[:desc]

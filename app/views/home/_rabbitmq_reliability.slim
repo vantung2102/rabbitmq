@@ -5,7 +5,7 @@
         = lucide_icon(:reliability, class: 'w-4 h-4')
         span.font-black.text-xs.uppercase.tracking-wide RELIABILITY
 
-    h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight RabbitMQ Reliability Mechanisms
+    h2.text-xl.md:text-2xl.font-black.text-gray-900.mb-2.leading-tight RabbitMQ Reliability
 
     .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
       - reliability_features.each do |feature|
@@ -15,7 +15,6 @@
               .bg-white.p-1.5.rounded-lg.shadow-md
                 .text-xl = feature[:icon]
               .text-white
-                .text-xs.font-bold.uppercase.tracking-wider Feature
                 .text-base.font-black = feature[:title]
 
           .p-4

@@ -27,7 +27,7 @@ div data-controller="slides" class="slides-container relative w-full h-screen ov
       = render 'message_broker'
 
     / Slide 7: RabbitMQ Overview
-    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-gradient-to-br from-purple-600 to-purple-800 pt-20 pb-20"
+    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-white pt-20 pb-20"
       = render 'rabbitmq'
 
     / Slide 8: RabbitMQ Architecture
@@ -47,17 +47,13 @@ div data-controller="slides" class="slides-container relative w-full h-screen ov
       = render 'rabbitmq_reliability'
 
     / Slide 12: Use Cases
-    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-pink-50 pt-20 pb-20"
-      = render 'rabbitmq_use_cases'
+    / section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-pink-50 pt-20 pb-20"
+    /   = render 'rabbitmq_use_cases'
 
     / Slide 13: Comparison
     section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-violet-50 pt-20 pb-20"
       = render 'comparison'
 
-    / Slide 14: Decision Matrix
-    section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-start justify-center overflow-y-auto bg-rose-50 pt-20 pb-20"
-      = render 'decision_matrix'
-
-    / Slide 15: Thank You
+    / Slide 14: Thank You
     section.slide data-slides-target="slide" class="hidden w-full h-screen flex items-center justify-center overflow-y-auto bg-gradient-to-br from-orange-400 to-pink-500 pt-20 pb-20"
       = render 'thank_you'
