@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   end
 
   # RabbitMQ routes
-  resources :rabbitmq, only: [] do
+  resources :rabbitmqs, only: [] do
     collection do
       post :create_order
       post :paid_order

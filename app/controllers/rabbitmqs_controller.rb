@@ -1,4 +1,4 @@
-class RabbitmqController < ApplicationController
+class RabbitMQsController < ApplicationController
   def create_order
     order_data = {
       order_id: rand(10000..99999),

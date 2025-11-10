@@ -117,7 +117,6 @@ module HomeHelper
   RABBITMQ_WHY = [
     "Guaranteed message delivery",
     "Flexible routing (4 exchange types)",
-    "Clustering & High Availability",
     "Management UI + Monitoring",
     "Multi-language support"
   ].freeze
