@@ -3,7 +3,7 @@ module Orders
     include Sneakers::Worker
 
     from_queue 'orders.inventory.vn',
-      exchange: 'order.inventory',
+      exchange: 'app.orders',
       exchange_type: :topic,
       routing_key: '#.vn',  # Matches: order.created.vn, order.paid.vn, order.shipped.vn
       durable: true,

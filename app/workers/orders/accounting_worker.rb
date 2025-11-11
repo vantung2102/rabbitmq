@@ -1,11 +1,11 @@
 module Orders
-  class InventoryWorker
+  class AccountingWorker
     include Sneakers::Worker
 
-    from_queue 'orders.inventory',
+    from_queue 'orders.accounting',
       exchange: 'app.orders',
       exchange_type: :topic,
-      routing_key: 'order.created.*',  # Matches: order.created.vn, order.created.us, etc.
+      routing_key: 'order.paid.#',  # Matches: order.paid.vn, order.paid.us, etc.
       durable: true,
       ack: true,
       threads: 2,
@@ -16,11 +16,11 @@ module Orders
 
       country = data['country']
 
-      puts "[INVENTORY WORKER][#{country}] - Order ID: #{data['order_id']}"
+      puts "[ACCOUNTING WORKER][#{country}] - Order ID: #{data['order_id']}"
 
       ack!
     rescue => e
-      Rails.logger.error "[INVENTORY] Error: #{e.message}"
+      Rails.logger.error "❌ [ACCOUNTING] Error: #{e.message}"
       reject!
     end
   end

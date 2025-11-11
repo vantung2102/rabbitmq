@@ -1,7 +1,7 @@
 class LoggerWorker
   include Sneakers::Worker
 
-  from_queue 'workers.logger',
+  from_queue 'logger',
     routing_key: 'logger',
     durable: true,
     ack: true,

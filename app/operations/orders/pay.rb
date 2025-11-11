@@ -1,5 +1,5 @@
 module Orders
-  class Paid < ApplicationOperation
+  class Pay < ApplicationOperation
     attr_accessor :params
 
     def initialize(params)
@@ -8,7 +8,7 @@ module Orders
   end
 
   def call
-    RabbitMQ::Publisher.fanout('app.orders', order_data)
+    RabbitMQ::Publisher.topic('orders.accounting', order, routing_key: "order.paid.#{params[:country]}")
 
     OperationResponse.success({ message: 'Order paid successfully' })
   rescue => e
@@ -16,4 +16,12 @@ module Orders
   end
 
   private
+
+  def order
+    @order ||= {
+      order_id: rand(10000..99999),
+      country: params[:country],
+      timestamp: Time.now.iso8601
+    }
+  end
 end

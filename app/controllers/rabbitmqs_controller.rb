@@ -24,40 +24,27 @@ class RabbitMQsController < ApplicationController
   end
 
   def paid_order
-    order_data = {
-      order_id: rand(10000..99999),
-      product: "MacBook Pro",
-      amount: 2999,
-      country: params[:country] || "vn",
-      payment_method: "credit_card",
-      timestamp: Time.now.iso8601
-    }
+    response = Orders::Pay.call(params)
 
-    OrderPublisher.publish_order_paid(order_data)
+    if response.success?
+      flash[:success] = response.data[:message]
+    else
+      flash[:error] = response.errors[:message]
+    end
 
-    flash[:success] = "✅ Order ##{order_data[:order_id]} paid! Published to RabbitMQ. Check console logs."
-    redirect_to demo_index_path
-  rescue => e
-    flash[:error] = "❌ Failed to publish paid order: #{e.message}"
     redirect_to demo_index_path
   end
 
   def shipped_order
-    order_data = {
-      order_id: rand(10000..99999),
-      product: "MacBook Pro",
-      country: params[:country] || "vn",
-      tracking_number: "VN#{rand(100000..999999)}",
-      timestamp: Time.now.iso8601
-    }
+    # response = Orders::Ship.call(params)
 
-    OrderPublisher.publish_order_shipped(order_data)
+    # if response.success?
+    #   flash[:success] = response.data[:message]
+    # else
+    #   flash[:error] = response.errors[:message]
+    # end
 
-    flash[:success] = "✅ Order ##{order_data[:order_id]} shipped! Published to RabbitMQ. Check console logs."
-    redirect_to demo_index_path
-  rescue => e
-    flash[:error] = "❌ Failed to publish shipped order: #{e.message}"
-    redirect_to demo_index_path
+    # redirect_to demo_index_path
   end
 
   def headers_exchange_demo
