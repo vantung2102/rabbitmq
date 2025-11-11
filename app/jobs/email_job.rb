@@ -5,11 +5,10 @@ class EmailJob
 
   def perform(email)
     puts "================================================"
-    puts "[SIDEKIQ][EMAIL JOB] Sending email to #{email}"
 
+    puts "[SIDEKIQ][EMAIL JOB] Sending email to #{email}"
     sleep 1
 
-    puts "[SIDEKIQ][EMAIL JOB] Email sent to #{email}"
     puts "================================================"
   end
 end
