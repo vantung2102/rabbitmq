@@ -7,11 +7,9 @@ module Orders
     end
 
     def call
-      # Create
-      RabbitMQ::Publisher.topic('app.orders', order_data, routing_key: "order.created.#{params[:country]}")
+      RabbitMQ::Publisher.topic('orders.inventory', order, routing_key: "order.created.#{params[:country]}")
 
-      # Notify all subscribers
-      RabbitMQ::Publisher.fanout('orders.notifications', order_data)
+      RabbitMQ::Publisher.fanout('orders.notifications', order)
 
       OperationResponse.success({ message: 'Order created successfully' })
     rescue => e
@@ -20,13 +18,12 @@ module Orders
 
     private
 
-    def order_data
-      {
+    def order
+      @order ||= {
         order_id: rand(10000..99999),
         product: params[:product],
         amount: params[:amount],
         country: params[:country],
-        customer_email: params[:email],
         timestamp: Time.now.iso8601
       }
     end
