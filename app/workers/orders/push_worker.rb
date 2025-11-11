@@ -2,7 +2,13 @@ module Orders
   class PushWorker
     include Sneakers::Worker
 
-    from_queue 'workers.notifications.push', durable: true, ack: true, threads: 2, prefetch: 10
+    from_queue 'orders.notifications.push',
+      exchange: 'orders.notifications',
+      exchange_type: :fanout,
+      durable: true,
+      ack: true,
+      threads: 2,
+      prefetch: 10
 
     def work(msg)
       payload = JSON.parse(msg)

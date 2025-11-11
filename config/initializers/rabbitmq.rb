@@ -23,10 +23,6 @@ module RabbitMQ
       @channel = nil
     end
 
-    private
-
-    WITH_ROUTING_KEY = %i[direct topic]
-
     def setup
       @connection = Bunny.new(
         host: ENV.fetch('RABBITMQ_HOST', 'localhost'),
@@ -40,51 +36,9 @@ module RabbitMQ
 
       @connection.start
       @channel = @connection.create_channel
-
-      setup_bindings
     end
 
-    def setup_bindings
-      rabbitmq_bindings = Rails.application.config_for(:rabbitmq_bindings)
-
-      rabbitmq_bindings.each do |exchange_type, bindings|
-        bindings.each do |binding|
-          binding.each do |exchange_name, queue_names|
-            exchange = declare_exchange(@channel, exchange_type, exchange_name.to_s)
-
-            queue_names.each do |queue_name|
-              queue = @channel.queue(queue_name.to_s, durable: true)
-
-              if WITH_ROUTING_KEY.include?(exchange_type.to_sym)
-                routing_key = queue_name.split('.').last
-                queue.bind(exchange, routing_key:)
-              else
-                queue.bind(exchange)
-              end
-            end
-          end
-        end
-      end
-    end
-
-    def declare_exchange(channel, exchange_type, exchange_name)
-      case exchange_type.to_s
-      when 'direct'
-        channel.direct(exchange_name, durable: true)
-      when 'fanout'
-        channel.fanout(exchange_name, durable: true)
-      when 'topic'
-        channel.topic(exchange_name, durable: true)
-      when 'headers'
-        channel.headers(exchange_name, durable: true)
-      else
-        raise ArgumentError, "Unsupported exchange type: #{exchange_type}"
-      end
-    end
-
-    def rabbitmq_bindings
-      @bindings ||= Rails.application.config_for(:rabbitmq_bindings)
-    end
+    private
 
     def connected?
       @connection&.connected?
@@ -112,7 +66,7 @@ module RabbitMQ
       private
 
       def publish(exchange_type, exchange_name, message, **options)
-        exchange = channel.public_send(exchange_type, exchange_name, durable: true)
+        exchange = RabbitMQ.channel.public_send(exchange_type, exchange_name, durable: true)
 
         # Default options cho reliability
         publish_options = {
@@ -124,11 +78,6 @@ module RabbitMQ
         exchange.publish(message.to_json, publish_options)
       rescue StandardError => e
         Rails.logger.error("Failed to publish message: #{e.message}")
-      end
-
-
-      def channel
-        @channel ||= RabbitMQ.channel
       end
     end
   end
