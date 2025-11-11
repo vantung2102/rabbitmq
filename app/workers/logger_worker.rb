@@ -11,12 +11,15 @@ class LoggerWorker
     prefetch: 10
 
   def work(msg)
+    puts "================================================"
+
     payload = JSON.parse(msg)
 
     content = payload['content']
     priority = payload['priority']
 
-    puts "content=#{content} priority=#{priority}"
+    puts "[RABBITMQ][LOGGER] - Priority - #{priority}"
+    puts "[RABBITMQ][LOGGER] - Logger ID - #{payload['id']}"
 
     case priority
     when 'high'
@@ -26,6 +29,8 @@ class LoggerWorker
     when 'low'
       Rails.logger.error("[LOGGER WORKER] content=#{content} priority=#{priority}")
     end
+
+    puts "================================================"
 
     ack!
   rescue => e

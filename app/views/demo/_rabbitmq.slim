@@ -24,7 +24,7 @@
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
             = lucide_icon(:direct, class: 'w-5 h-5')
-            | Logger (Direct Exchange)
+            | Logger (Direct)
         .mb-3
           label.block.text-xs.font-semibold.mb-1.text-gray-700 Priority
           = f.select :priority, priority_options, { selected: 'high' }, class: "w-full p-2 bg-white border-2 border-gray-300 rounded-lg text-sm text-gray-900"
