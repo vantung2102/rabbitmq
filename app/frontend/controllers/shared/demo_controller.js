@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect() {
     this.updateStats();
-    this.statsInterval = setInterval(() => this.updateStats(), 3000);
+    this.statsInterval = setInterval(() => this.updateStats(), 300000);
     this.handleFlashMessages();
     this.setupFormListeners();
   }

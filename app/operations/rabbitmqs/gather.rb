@@ -23,19 +23,15 @@ module RabbitMQs
     }.freeze
 
     QUEUES = [
-      'inventory.service',
-      'accounting.service',
-      'vietnam.warehouse',
-      'analytics.service',
-      'logging.service'
+      'workers.logger'
     ].freeze
 
     def channel
-      @channel ||= RabbitMQConfig.channel
+      @channel ||= RabbitMQ.channel
     end
 
     def rabbitmq_connected?
-      RabbitMQConfig.connection&.open? && channel
+      RabbitMQ.connected? && channel
     end
 
     def connections

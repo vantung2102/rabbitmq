@@ -1,5 +1,4 @@
 development:
-  fanout:
-    - demo.fanout:
-      - analytics.service
-      - logging.service
+  direct:
+    - app.logger:
+      - workers.logger

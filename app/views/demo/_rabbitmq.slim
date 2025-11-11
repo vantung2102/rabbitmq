@@ -19,6 +19,19 @@
     = render 'demo/_partials/stats_card', id: 'rabbitmq-latency', value: '0ms', label: 'Latency', color: 'orange', data_target: 'demo.rabbitmqLatency'
 
   .space-y-4.mb-4
+    = form_with url: logger_rabbitmqs_path, method: :post, local: true do |f|
+      .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
+        .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
+          h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
+            = lucide_icon(:direct, class: 'w-5 h-5')
+            | Logger (Direct Exchange)
+        .mb-3
+          label.block.text-xs.font-semibold.mb-1.text-gray-700 Priority
+          = f.select :priority, priority_options, { selected: 'high' }, class: "w-full p-2 bg-white border-2 border-gray-300 rounded-lg text-sm text-gray-900"
+        button.bg-orange-600.hover:bg-orange-700.text-white.w-full.flex.items-center.justify-center.gap-2.text-sm.py-2.rounded-lg.font-bold.transition-colors type="submit"
+          = lucide_icon(:direct, class: 'w-4 h-4')
+          | Logger
+
     = form_with url: create_order_rabbitmqs_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
@@ -64,18 +77,7 @@
           = lucide_icon(:shipped, class: 'w-4 h-4')
           | Shipped Order
 
-    = form_with url: direct_exchange_demo_rabbitmqs_path, method: :post, local: true do |f|
-      .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
-        .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
-          h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
-            = lucide_icon(:direct, class: 'w-5 h-5')
-            | Direct Exchange Demo
-        .mb-3
-          label.block.text-xs.font-semibold.mb-1.text-gray-700 Priority
-          = f.select :priority, priority_options, { selected: 'high' }, class: "w-full p-2 bg-white border-2 border-gray-300 rounded-lg text-sm text-gray-900"
-        button.bg-orange-600.hover:bg-orange-700.text-white.w-full.flex.items-center.justify-center.gap-2.text-sm.py-2.rounded-lg.font-bold.transition-colors type="submit"
-          = lucide_icon(:direct, class: 'w-4 h-4')
-          | Direct Exchange
+
 
     = form_with url: headers_exchange_demo_rabbitmqs_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md

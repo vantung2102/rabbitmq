@@ -25,6 +25,8 @@ module RabbitMQ
 
     private
 
+    WITH_ROUTING_KEY = %i[direct topic]
+
     def setup
       @connection = Bunny.new(
         host: ENV.fetch('RABBITMQ_HOST', 'localhost'),
@@ -43,6 +45,8 @@ module RabbitMQ
     end
 
     def setup_bindings
+      rabbitmq_bindings = Rails.application.config_for(:rabbitmq_bindings)
+
       rabbitmq_bindings.each do |exchange_type, bindings|
         bindings.each do |binding|
           binding.each do |exchange_name, queue_names|
@@ -50,7 +54,13 @@ module RabbitMQ
 
             queue_names.each do |queue_name|
               queue = @channel.queue(queue_name.to_s, durable: true)
-              queue.bind(exchange)
+
+              if WITH_ROUTING_KEY.include?(exchange_type.to_sym)
+                routing_key = queue_name.split('.').last
+                queue.bind(exchange, routing_key:)
+              else
+                queue.bind(exchange)
+              end
             end
           end
         end

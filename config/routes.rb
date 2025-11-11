@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       post :shipped_order
       post :direct_exchange_demo
       post :headers_exchange_demo
+
+
+      post :logger
     end
   end
 end
