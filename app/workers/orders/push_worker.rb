@@ -13,7 +13,11 @@ module Orders
     def work(msg)
       payload = JSON.parse(msg)
 
-      puts "Processing push notification: Order ID - #{payload['order_id']}"
+      puts "================================================"
+      puts "[RABBITMQ][PUSH] - Order ID - #{payload['order_id']}"
+      puts "================================================"
+
+      sleep 1
 
       ack!
     rescue => e

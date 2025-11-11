@@ -13,7 +13,11 @@ module Orders
     def work(msg)
       payload = JSON.parse(msg)
 
-      puts "Processing SMS notification: Order ID - #{payload['order_id']}"
+      puts "================================================"
+      puts "[RABBITMQ][SMS] - Order ID - #{payload['order_id']}"
+      puts "================================================"
+
+      sleep 1
 
       ack!
     rescue => e

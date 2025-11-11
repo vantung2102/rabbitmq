@@ -14,9 +14,11 @@ module Orders
     def work(msg)
       data = JSON.parse(msg)
 
-      country = data['country']
+      puts "================================================"
+      puts "[RABBITMQ][VIETNAM INVENTORY] - Order ID - #{data['order_id']}"
+      puts "================================================"
 
-      puts "[VIETNAM INVENTORY WORKER][#{country}] - Order ID: #{data['order_id']}"
+      sleep 1
 
       ack!
     rescue => e

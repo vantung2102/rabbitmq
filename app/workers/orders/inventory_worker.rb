@@ -14,13 +14,18 @@ module Orders
     def work(msg)
       data = JSON.parse(msg)
 
-      country = data['country']
+      puts "================================================"
+      puts "[RABBITMQ][INVENTORY] - Country - #{data['country']}"
+      puts "[RABBITMQ][INVENTORY] - Order ID - #{data['order_id']}"
+      puts "================================================"
 
-      puts "[INVENTORY WORKER][#{country}] - Order ID: #{data['order_id']}"
+      sleep 1
+
+      ::RabbitMQ::Publisher.fanout('orders.notifications', data)
 
       ack!
     rescue => e
-      Rails.logger.error "[INVENTORY] Error: #{e.message}"
+      puts "[RABBITMQ][INVENTORY] Error: #{e.message}"
       reject!
     end
   end

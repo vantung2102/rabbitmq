@@ -8,7 +8,6 @@ module Orders
 
     def call
       RabbitMQ::Publisher.topic('app.orders', order, routing_key: "order.created.#{params[:country]}")
-      RabbitMQ::Publisher.fanout('orders.notifications', order)
 
       OperationResponse.success({ message: 'Order created successfully' })
     rescue => e
