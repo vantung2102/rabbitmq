@@ -52,5 +52,7 @@ module RailsViewTemplate
     # Enable web console in browser - protected by devise
     config.web_console.development_only = false
     config.web_console.permissions = '0.0.0.0/0'
+
+    config.hosts << "ac5a01817b1e.ngrok-free.app"
   end
 end
