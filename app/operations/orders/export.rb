@@ -7,7 +7,12 @@ module Orders
     end
 
     def call
-      RabbitMQ::Publisher.headers('order.documents', message, headers: headers)
+      exchange = RabbitMQ.channel.headers('order.documents', durable: true)
+
+      document_all_queue = RabbitMQ.channel.queue('orders.documents', durable: true)
+      document_all_queue.bind(exchange, arguments: arguments)
+
+      exchange.publish(message.to_json, headers: headers)
 
       OperationResponse.success({ message: 'Document exported successfully' })
     rescue => e
@@ -25,11 +30,19 @@ module Orders
     end
 
     def headers
-      @headers ||= {
-        format: params[:format] || 'pdf',
-        priority: params[:priority] || 'high',
-        size: params[:size] || 'large',
-        type: 'document'
+      {
+        'format' => params[:format].to_s,
+        'priority' => params[:priority].to_s,
+        'size' => params[:size].to_s,
+      }
+    end
+
+    def arguments
+      {
+        'x-match' => 'all',
+        'format' => 'pdf',
+        'priority' => 'high',
+        'size' => 'large',
       }
     end
   end

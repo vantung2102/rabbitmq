@@ -14,13 +14,16 @@ module Orders
     def work(msg)
       data = JSON.parse(msg)
 
-      country = data['country']
+      puts "================================================"
+      puts "[RABBITMQ][ACCOUNTING] - Country - #{data['country']}"
+      puts "[RABBITMQ][ACCOUNTING] - Order ID - #{data['order_id']}"
+      puts "================================================"
 
-      puts "[ACCOUNTING WORKER][#{country}] - Order ID: #{data['order_id']}"
+      sleep 1
 
       ack!
     rescue => e
-      Rails.logger.error "❌ [ACCOUNTING] Error: #{e.message}"
+      puts "[RABBITMQ][ACCOUNTING] Error: #{e.message}"
       reject!
     end
   end
