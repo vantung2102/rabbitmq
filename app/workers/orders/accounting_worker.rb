@@ -21,6 +21,8 @@ module Orders
 
       sleep 1
 
+      Orders::PaymentProcess.call(data)
+
       ack!
     rescue => e
       puts "[RABBITMQ][ACCOUNTING] Error: #{e.message}"
