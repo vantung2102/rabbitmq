@@ -4,7 +4,7 @@ module DemoHelper
   DEFAULT_EMAIL = "demo@example.com".freeze
   DEFAULT_IMAGE_URL = "https://example.com/image.jpg".freeze
   DEFAULT_PRODUCT = "MacBook Pro".freeze
-  DEFAULT_AMOUNT = 2999
+  DEFAULT_AMOUNT = 3000
   DEFAULT_COUNTRY = "vn".freeze
 
   # Country options

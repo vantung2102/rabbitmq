@@ -61,25 +61,6 @@ class OrderPublisher
     raise
   end
 
-  # Demo Direct Exchange - Priority routing
-  def self.publish_with_priority(message, priority)
-    routing_key = case priority
-    when 'high' then 'priority.high'
-    when 'medium' then 'priority.medium'
-    else 'priority.low'
-    end
-
-    RabbitMQ::Publisher.direct(
-      DIRECT_EXCHANGE,
-      message,
-      routing_key: routing_key,
-      priority: priority == 'high' ? 10 : 5
-    )
-  rescue => e
-    Rails.logger.error "❌ Failed to publish with priority: #{e.message}"
-    raise
-  end
-
   # Demo Headers Exchange - Complex routing
   def self.publish_with_headers(message, headers)
     RabbitMQ::Publisher.headers(

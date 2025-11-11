@@ -2,3 +2,11 @@ development:
   direct:
     - app.logger:
       - workers.logger
+  fanout:
+    - app.orders:
+      - workers.notifications.sms
+      - workers.notifications.push
+      - workers.notifications.email
+  topic:
+    - app.orders:
+      - workers

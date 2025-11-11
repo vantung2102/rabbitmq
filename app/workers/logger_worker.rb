@@ -26,7 +26,7 @@ class LoggerWorker
     end
 
     ack!
-  rescue JSON::ParserError => e
+  rescue => e
     Rails.logger.error("[PRIORITY WORKER] Invalid JSON: #{e.message} msg=#{msg.inspect}")
     reject!
   end

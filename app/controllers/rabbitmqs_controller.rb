@@ -11,56 +11,15 @@ class RabbitMQsController < ApplicationController
     redirect_to demo_index_path
   end
 
-
-  def direct_exchange_demo
-    priority = params[:priority] || 'high'
-    message = {
-      id: rand(1000..9999),
-      content: "Priority message: #{priority}",
-      timestamp: Time.now.iso8601
-    }
-
-    OrderPublisher.publish_with_priority(message, priority)
-
-    flash[:success] = "✅ Published to Direct Exchange with priority: #{priority}. Check console logs."
-    redirect_to demo_index_path
-  rescue => e
-    flash[:error] = "❌ Failed to publish with priority: #{e.message}"
-    redirect_to demo_index_path
-  end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def create_order
-    order_data = {
-      order_id: rand(10000..99999),
-      product: params[:product],
-      amount: params[:amount],
-      country: params[:country],
-      customer_email: params[:email],
-      timestamp: Time.now.iso8601
-    }
+    response = Orders::Create.call(params)
 
-    # RabbitMQ - Publish to Topic Exchange and Fanout Exchange
-    OrderPublisher.publish_order_created(order_data)
+    if response.success?
+      flash[:success] = response.data[:message]
+    else
+      flash[:error] = response.errors[:message]
+    end
 
-    flash[:success] = "✅ Order ##{order_data[:order_id]} published to RabbitMQ! Check console logs and RabbitMQ Management UI."
-    redirect_to demo_index_path
-  rescue => e
-    flash[:error] = "❌ Failed to publish order: #{e.message}"
     redirect_to demo_index_path
   end
 
