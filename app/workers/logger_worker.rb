@@ -2,6 +2,8 @@ class LoggerWorker
   include Sneakers::Worker
 
   from_queue 'logger',
+    exchange: 'logger',
+    exchange_type: :direct,
     routing_key: 'logger',
     durable: true,
     ack: true,

@@ -13,7 +13,7 @@ module Orders
     def work(msg)
       payload = JSON.parse(msg)
 
-      puts "Processing SMS notification: #{payload}"
+      puts "Processing SMS notification: Order ID - #{payload['order_id']}"
 
       ack!
     rescue => e

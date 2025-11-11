@@ -1,5 +1,5 @@
 module Orders
-  class Pay < ApplicationOperation
+  class Ship < ApplicationOperation
     attr_accessor :params
 
     def initialize(params)
@@ -7,11 +7,11 @@ module Orders
     end
 
     def call
-      RabbitMQ::Publisher.topic('app.orders', order, routing_key: "order.paid.#{params[:country]}")
+      RabbitMQ::Publisher.topic('app.orders', order, routing_key: "order.shipped.#{params[:country]}")
 
-      OperationResponse.success({ message: 'Order paid successfully' })
+      OperationResponse.success({ message: 'Order shipped successfully' })
     rescue => e
-      OperationResponse.failure({ message: "Failed to publish paid order: #{e.message}" })
+      OperationResponse.failure({ message: "Failed to publish shipped order: #{e.message}" })
     end
 
     private
@@ -24,5 +24,4 @@ module Orders
       }
     end
   end
-
 end

@@ -13,7 +13,7 @@ module Orders
     def work(msg)
       payload = JSON.parse(msg)
 
-      puts "Processing push notification: #{payload}"
+      puts "Processing push notification: Order ID - #{payload['order_id']}"
 
       ack!
     rescue => e

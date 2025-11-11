@@ -3,7 +3,7 @@
     .p-2.bg-orange-100.rounded-lg
       = lucide_icon(:rabbitmq, class: 'w-8 h-8 text-orange-600')
     .flex-1
-      h2.text-xl.font-black.text-orange-600 RabbitMQ Demo
+      h2.text-xl.font-black.text-orange-600 RabbitMQ
       p.text-xs.text-gray-500 Message broker & routing
 
   .bg-orange-50.border-2.border-orange-200.rounded-xl.p-3.mb-4
@@ -12,14 +12,14 @@
       | About RabbitMQ
     p.text-xs.text-gray-700.leading-relaxed Enterprise message broker with powerful routing. Ideal for microservices, event-driven architecture, and complex messaging patterns.
 
-  .grid.grid-cols-2.gap-2.mb-4
-    = render 'demo/_partials/stats_card', id: 'rabbitmq-messages', value: '0', label: 'Messages', color: 'orange', data_target: 'demo.rabbitmqMessages'
-    = render 'demo/_partials/stats_card', id: 'rabbitmq-connections', value: '0', label: 'Connections', color: 'orange', data_target: 'demo.rabbitmqConnections'
-    = render 'demo/_partials/stats_card', id: 'rabbitmq-queues', value: '5', label: 'Queues', color: 'orange', data_target: 'demo.rabbitmqQueues'
-    = render 'demo/_partials/stats_card', id: 'rabbitmq-latency', value: '0ms', label: 'Latency', color: 'orange', data_target: 'demo.rabbitmqLatency'
+  / .grid.grid-cols-2.gap-2.mb-4
+  /   = render 'demo/_partials/stats_card', id: 'rabbitmq-messages', value: '0', label: 'Messages', color: 'orange', data_target: 'demo.rabbitmqMessages'
+  /   = render 'demo/_partials/stats_card', id: 'rabbitmq-connections', value: '0', label: 'Connections', color: 'orange', data_target: 'demo.rabbitmqConnections'
+  /   = render 'demo/_partials/stats_card', id: 'rabbitmq-queues', value: '5', label: 'Queues', color: 'orange', data_target: 'demo.rabbitmqQueues'
+  /   = render 'demo/_partials/stats_card', id: 'rabbitmq-latency', value: '0ms', label: 'Latency', color: 'orange', data_target: 'demo.rabbitmqLatency'
 
   .space-y-4.mb-4
-    = form_with url: logger_rabbitmqs_path, method: :post, local: true do |f|
+    = form_with url: logger_orders_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
@@ -32,7 +32,7 @@
           = lucide_icon(:direct, class: 'w-4 h-4')
           | Logger
 
-    = form_with url: create_order_rabbitmqs_path, method: :post, local: true do |f|
+    = form_with url: orders_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
@@ -51,7 +51,7 @@
           = lucide_icon(:order, class: 'w-4 h-4')
           | Create Order
 
-    = form_with url: paid_order_rabbitmqs_path, method: :post, local: true do |f|
+    = form_with url: payment_orders_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
@@ -64,7 +64,7 @@
           = lucide_icon(:paid, class: 'w-4 h-4')
           | Paid Order
 
-    = form_with url: shipped_order_rabbitmqs_path, method: :post, local: true do |f|
+    = form_with url: shipping_orders_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
@@ -79,12 +79,12 @@
 
 
 
-    = form_with url: headers_exchange_demo_rabbitmqs_path, method: :post, local: true do |f|
+    = form_with url: export_orders_path, method: :post, local: true do |f|
       .bg-white.border-2.border-orange-300.rounded-xl.p-4.shadow-md
         .bg-orange-50.border-2.border-orange-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-orange-700.mb-0.flex.items-center.gap-2
             = lucide_icon(:headers, class: 'w-5 h-5')
-            | Headers Exchange Demo
+            | Export
         .mb-3
           label.block.text-xs.font-semibold.mb-1.text-gray-700 Format
           = f.select :format, format_options, { selected: 'pdf' }, class: "w-full p-2 bg-white border-2 border-gray-300 rounded-lg text-sm text-gray-900"

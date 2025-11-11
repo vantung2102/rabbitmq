@@ -7,7 +7,7 @@ module Loggers
     end
 
     def call
-      RabbitMQ::Publisher.direct('app.logger', message, routing_key: 'logger')
+      RabbitMQ::Publisher.direct('logger', message, routing_key: 'logger')
 
       OperationResponse.success({ message: 'Logger message published successfully' })
     rescue => e

@@ -3,7 +3,7 @@
     .p-2.bg-green-100.rounded-lg
       = lucide_icon(:sidekiq, class: 'w-8 h-8 text-green-600')
     .flex-1
-      h2.text-xl.font-black.text-green-600 Sidekiq Demo
+      h2.text-xl.font-black.text-green-600 Sidekiq
       p.text-xs.text-gray-500 Background job processing
 
   .bg-green-50.border-2.border-green-200.rounded-xl.p-3.mb-4
@@ -12,11 +12,11 @@
       | About Sidekiq
     p.text-xs.text-gray-700.leading-relaxed Fast, simple background job processing for Ruby. Perfect for Rails monoliths with straightforward job queuing needs.
 
-  .grid.grid-cols-2.gap-2.mb-4
-    = render 'demo/_partials/stats_card', id: 'sidekiq-processed', value: '0', label: 'Processed', color: 'green', data_target: 'demo.sidekiqProcessed'
-    = render 'demo/_partials/stats_card', id: 'sidekiq-workers', value: '0', label: 'Workers', color: 'green', data_target: 'demo.sidekiqWorkers'
-    = render 'demo/_partials/stats_card', id: 'sidekiq-failed', value: '0', label: 'Failed', color: 'green', data_target: 'demo.sidekiqFailed'
-    = render 'demo/_partials/stats_card', id: 'sidekiq-latency', value: '0ms', label: 'Latency', color: 'green', data_target: 'demo.sidekiqLatency'
+  / .grid.grid-cols-2.gap-2.mb-4
+  /   = render 'demo/_partials/stats_card', id: 'sidekiq-processed', value: '0', label: 'Processed', color: 'green', data_target: 'demo.sidekiqProcessed'
+  /   = render 'demo/_partials/stats_card', id: 'sidekiq-workers', value: '0', label: 'Workers', color: 'green', data_target: 'demo.sidekiqWorkers'
+  /   = render 'demo/_partials/stats_card', id: 'sidekiq-failed', value: '0', label: 'Failed', color: 'green', data_target: 'demo.sidekiqFailed'
+  /   = render 'demo/_partials/stats_card', id: 'sidekiq-latency', value: '0ms', label: 'Latency', color: 'green', data_target: 'demo.sidekiqLatency'
 
   .space-y-4.mb-4
     = form_with url: send_email_sidekiqs_path, method: :post, local: true do |f|
@@ -24,13 +24,13 @@
         .bg-green-50.border-2.border-green-300.rounded-lg.p-3.mb-4
           h3.text-lg.font-black.text-green-700.mb-0.flex.items-center.gap-2
             = lucide_icon(:email, class: 'w-5 h-5')
-            | Send Email Job
+            | Send Email
         .mb-3
           label.block.text-xs.font-semibold.mb-1.text-gray-700 Email Address
           = f.text_field :email, value: default_email, class: "w-full p-2 bg-white border-2 border-gray-300 rounded-lg text-sm text-gray-900", placeholder: 'user@example.com'
         button.bg-green-600.hover:bg-green-700.text-white.w-full.flex.items-center.justify-center.gap-2.text-sm.py-2.rounded-lg.font-bold.transition-colors type="submit"
           = lucide_icon(:email, class: 'w-4 h-4')
-          | Send Email Job
+          | Send Email
 
     = form_with url: process_image_sidekiqs_path, method: :post, local: true do |f|
       .bg-white.border-2.border-green-300.rounded-xl.p-4.shadow-md
