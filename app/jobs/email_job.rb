@@ -4,8 +4,12 @@ class EmailJob
   sidekiq_options queue: 'default', retry: 3
 
   def perform(email)
-    puts "Sending email to #{email}"
-    sleep 5
-    puts "Email sent to #{email}"
+    puts "================================================"
+    puts "[SIDEKIQ][EMAIL JOB] Sending email to #{email}"
+
+    sleep 1
+
+    puts "[SIDEKIQ][EMAIL JOB] Email sent to #{email}"
+    puts "================================================"
   end
 end
