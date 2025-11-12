@@ -28,7 +28,7 @@ module Orders
         puts "[PAYMENT PROCESS] - Order: #{payload['order_id']} (retry=#{retry_count}/#{MAX_RETRIES})"
 
         # Simulate failure for demo
-        raise "[PAYMENT FAIL]"
+        # raise "[PAYMENT FAIL]"
 
         puts "================================================"
         sleep 0.5

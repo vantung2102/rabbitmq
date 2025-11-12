@@ -43,7 +43,7 @@ module HomeHelper
   # Agenda items
   AGENDA_ITEMS = [
     { title: "1. Problem & Solution", desc: "Synchronous vs Asynchronous Processing" },
-    { title: "2. Message Queue Fundamentals", desc: "Message Queue & Message Broker" },
+    { title: "2. Message Queue", desc: "Message Queue & Message Broker" },
     { title: "3. RabbitMQ ⭐", desc: "Architecture, Exchange Types, Reliability" },
     { title: "4. Live Demo 🚀", desc: "RabbitMQ + Sneakers implementation" },
     { title: "5. Comparison & Decision", desc: "When to use what" },
