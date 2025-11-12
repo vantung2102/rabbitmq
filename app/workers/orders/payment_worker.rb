@@ -6,6 +6,10 @@ module Orders
       exchange: 'orders.payment',
       exchange_type: :direct,
       routing_key: 'payment.process',
+      arguments: {
+        'x-dead-letter-exchange' => 'orders.payment.dlx',
+        'x-dead-letter-routing-key' => 'payment.error'
+      },
       durable: true,
       ack: true,
       threads: 2,
@@ -13,15 +17,18 @@ module Orders
 
     MAX_RETRIES = 5
 
-    def work(msg)
+    # Use metadata headers to track retry count across redeliveries
+    def work_with_params(msg, _delivery_info, metadata)
       payload = JSON.parse(msg)
-      retry_count = 0
+      headers = (metadata && metadata[:headers]) || {}
+      retry_count = headers['x-retry-count'].to_i
 
       begin
         puts "================================================"
-        puts "[PAYMENT PROCESS] - Order: #{payload['order_id']}"
+        puts "[PAYMENT PROCESS] - Order: #{payload['order_id']} (retry=#{retry_count}/#{MAX_RETRIES})"
 
-        # raise if rand(100) < 50
+        # Simulate failure for demo
+        raise "[PAYMENT FAIL]"
 
         puts "================================================"
         sleep 0.5
@@ -30,14 +37,19 @@ module Orders
         ack!
       rescue => e
         puts "================================================"
-        puts "[PAYMENT ERROR]"
+        puts "[PAYMENT ERROR] #{e.message}"
 
         if retry_count < MAX_RETRIES
-          puts "[PAYMENT RETRY] Requeuing... (#{retry_count}/#{MAX_RETRIES})"
-          retry_count += 1
-          sleep 1
+          new_retry = retry_count + 1
+          puts "[PAYMENT RETRY] Requeueing... (#{new_retry}/#{MAX_RETRIES})"
 
-          retry
+          publish(
+            payload.to_json,
+            routing_key: 'payment.process',
+            headers: { 'x-retry-count' => new_retry }
+          )
+
+          ack!
         else
           puts "[PAYMENT RETRY] Max retries reached (#{retry_count}/#{MAX_RETRIES})"
           reject!
